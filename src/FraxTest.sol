@@ -16,5 +16,8 @@ import {
     Vm,
     StdStyle,
     TestBase,
-    DSTest
+    DSTest,
+    Test
 } from "forge-std/Test.sol";
+
+abstract contract FraxTest is Test {}

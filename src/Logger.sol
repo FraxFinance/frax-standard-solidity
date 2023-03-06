@@ -57,4 +57,13 @@ library Logger {
     function percent(string memory _string, uint256 _percent, uint256 _precision) public view {
         logPercent(_string, _percent, _precision);
     }
+
+    function logScientific(string memory _string, uint256 _value) public view {
+        string memory _valueString = _value.toScientific();
+        console.log(string(abi.encodePacked(_string, " ", _valueString, " (raw: ", _value.toString(), ")")));
+    }
+
+    function scientific(string memory _string, uint256 _value) public view {
+        logScientific(_string, _value);
+    }
 }

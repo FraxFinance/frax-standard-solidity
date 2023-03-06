@@ -37,4 +37,32 @@ library StringsHelper {
         }
         return _string;
     }
+
+    function slice(string memory _string, uint256 _start, uint256 _end) public pure returns (string memory) {
+        bytes memory _stringBytes = bytes(_string);
+        bytes memory _result = new bytes(_end - _start);
+        for (uint256 i = _start; i < _end; i++) {
+            _result[i - _start] = _stringBytes[i];
+        }
+        return string(_result);
+    }
+
+    function trim(string memory _string) public pure returns (string memory) {
+        bytes memory _stringBytes = bytes(_string);
+        uint256 _start = 0;
+        uint256 _end = _stringBytes.length - 1;
+        for (uint256 i = 0; i < _stringBytes.length; i++) {
+            if (_stringBytes[i] != " ") {
+                _start = i;
+                break;
+            }
+        }
+        for (uint256 i = _stringBytes.length - 1; i >= 0; i--) {
+            if (_stringBytes[i] != " ") {
+                _end = i;
+                break;
+            }
+        }
+        return slice(_string, _start, _end + 1);
+    }
 }
