@@ -21,10 +21,12 @@ pragma solidity >=0.8.19;
 import { console2 as console } from "forge-std/Test.sol";
 import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
 import { NumberFormat } from "./NumberFormat.sol";
+import { AddressHelper } from "./AddressHelper.sol";
 
 library Logger {
     using Strings for *;
     using NumberFormat for *;
+    using AddressHelper for *;
 
     uint64 internal constant FIFTY_BPS = 158_247_046;
     uint64 internal constant ONE_PERCENT = FIFTY_BPS * 2;
@@ -65,5 +67,11 @@ library Logger {
 
     function scientific(string memory _string, uint256 _value) public view {
         logScientific(_string, _value);
+    }
+
+    function addressWithEtherscanLink(string memory _string, address _address) public view {
+        console.log(
+            string(abi.encodePacked(_string, " ", _address.toHexString(), " (", _address.toEtherscanLink(), ")"))
+        );
     }
 }
