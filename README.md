@@ -146,11 +146,6 @@ Why: Helps solve stack-too-deep errors, consistency, reinforces order of constru
 
 ### Internal and private functions should be prepended with an underscore _someInternalFunction _somePrivateFunction
 
-all other variables use camelCase (use google algorithm for acronyms)
-i.e. FxsErc20 not FXSERC20, someVarVeFxs, Gohm
-
-Use underscore to differentiate between memory and storage variables and to avoid naming collisions with storage variables
-
 ### Avoid abbreviations and acronyms in variables names, prefer descriptive variable names when possible
 
 Code should be self-documenting.  Give as descriptive a name as possible, within reason. Do not worry about saving horizontal space as it is far more important to make your code immediately understandable by a new reader. Do not use abbreviations that are ambiguous or unfamiliar to readers outside your project, and do not abbreviate by deleting letters within a word.
