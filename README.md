@@ -84,6 +84,12 @@ Example: `deployFunctions.sol` (contains no contracts just a collection of free 
 
 Why: Latest code can be unstable and npm packages are typically release candidates
 
+### Use Proper licenses
+
+Proprietary: `// SPDX-License-Identifier: BUSL-1.1`
+
+Open and composable: TODO
+
 # Language Features
 
 ### Do not rely on via-ir to solve stack-too-deep errors
@@ -131,7 +137,6 @@ Why:
 ### Use named imports { SomeContract } from "./SomeContract.sol";
 
 Why:
-
 - Reduces the need for the reader to have additional context when coming across an identifier.  Because identifiers are otherwise inherited, the location of an identifier is not known to the reader without a global search or IDE tooling
 - Solves issues with naming collisions
 - Makes compilation (and therefore testing) faster and makes verified code smaller
