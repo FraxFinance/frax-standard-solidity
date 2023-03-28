@@ -33,4 +33,32 @@ library OracleHelper {
             abi.encode(uint80(0), _price, 0, _lastUpdatedAt, uint80(0))
         );
     }
+
+    function setPrice(
+        AggregatorV3Interface _oracle,
+        uint256 price_,
+        uint256 _lastUpdatedAt,
+        Vm vm
+    ) public returns (int256 _price) {
+        _price = int256(price_);
+        vm.mockCall(
+            address(_oracle),
+            abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
+            abi.encode(uint80(0), _price, 0, _lastUpdatedAt, uint80(0))
+        );
+    }
+
+    function setPrice(
+        AggregatorV3Interface _oracle,
+        int256 price_,
+        uint256 _lastUpdatedAt,
+        Vm vm
+    ) public returns (int256 _price) {
+        _price = int256(price_);
+        vm.mockCall(
+            address(_oracle),
+            abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
+            abi.encode(uint80(0), _price, 0, _lastUpdatedAt, uint80(0))
+        );
+    }
 }
