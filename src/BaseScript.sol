@@ -34,4 +34,14 @@ abstract contract BaseScript is Script {
         console.logBytes(_constructorArgs);
         vm.ffi(_inputs);
     }
+
+    function deploy(
+        function() returns (address, bytes memory, string memory) _deployFunction
+    ) internal broadcaster returns (address _address, bytes memory _constructorParams, string memory _contractName) {
+        (_address, _constructorParams, _contractName) = _deployFunction();
+        console.log("_constructorParams:");
+        console.logBytes(_constructorParams);
+        console.log(_contractName, "deployed to _address:", _address);
+        _updateEnv(_address, _constructorParams, _contractName);
+    }
 }
