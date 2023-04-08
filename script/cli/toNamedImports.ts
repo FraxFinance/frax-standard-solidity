@@ -1,8 +1,8 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
-async function renameSolidity(filePath) {
-  const fileContents = (await fs.readFile(filePath, "utf8")).toString();
+export async function renameFile(filePath) {
+  const fileContents = (await fs.readFile(path.resolve(filePath), "utf8")).toString();
   const importStatements =
     (fileContents.match(/import\s+".*;/g) as string[])?.filter((item) => {
       return !item.includes("forge-std") && !item.includes("frax-std");
@@ -19,5 +19,6 @@ async function renameSolidity(filePath) {
   fs.writeFile(filePath, newFileContents, "utf8");
 }
 
-const args = process.argv.slice(2);
-args.forEach(renameSolidity);
+export async function toNamedImports(filePaths) {
+  filePaths.forEach(renameFile);
+}
