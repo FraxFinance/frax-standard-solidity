@@ -1,7 +1,9 @@
 import * as fs from "fs/promises";
 import * as path from "path";
 
-export async function renameFile(filePath) {
+export async function renameFileImports(filePath) {
+  filePath = path.resolve(filePath);
+  if (!(await fs.lstat(filePath)).isFile()) return;
   const fileContents = (await fs.readFile(path.resolve(filePath), "utf8")).toString();
   const importStatements =
     (fileContents.match(/import\s+".*;/g) as string[])?.filter((item) => {
@@ -20,5 +22,5 @@ export async function renameFile(filePath) {
 }
 
 export async function toNamedImports(filePaths) {
-  filePaths.forEach(renameFile);
+  filePaths.forEach(renameFileImports);
 }
