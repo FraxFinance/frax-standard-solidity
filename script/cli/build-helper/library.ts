@@ -31,7 +31,10 @@ const firstToUppercase = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-export const buildHelper = async (abi, NAME, RETURN_NAME) => {
+export const buildHelper = async (abi, NAME, INAME, RETURN_NAME) => {
+  if (Object.keys(abi).includes("abi")) {
+    abi = abi.abi;
+  }
   const funcs = (abi as AbiItem[]).filter((item) => item.type === "function" && item?.outputs?.length > 1);
 
   const items = funcs.map((func) => {
@@ -49,25 +52,26 @@ export const buildHelper = async (abi, NAME, RETURN_NAME) => {
         };
       }),
     };
-    const argTypeStrings = funcOut.args.map((arg) => arg.type + arg.name);
+    const argTypeStrings = funcOut.args.map((arg) => arg.type + " " + arg.name);
     const argStrings = funcOut.args.map((arg) => arg.name);
     const name = `_${camelCase(NAME)}`;
     const nameType = `${NAME}`;
     const nameWithType = `${nameType} ${name}`;
     const functionArgs = `${[nameWithType, ...argTypeStrings].join(", ")}`;
-    const structItemsString = `${struct.items.map((item) => RETURN_NAME + item.name).join(", ")}`;
+    const iFunctionArgs = `${[nameWithType, ...argTypeStrings].join(", ")}`.replace(NAME, INAME);
+    const structItemsString = `${struct.items.map((item) => RETURN_NAME + "." + item.name).join(", ")}`;
     const funcString = `
     function __${func.name}( ${functionArgs} ) internal ${func.stateMutability} returns (${
       struct.name
     } memory ${RETURN_NAME}) {
-      ( ${structItemsString} ) = ${func.name}(${argStrings.join(", ")});
+      ( ${structItemsString} ) = ${name}.${func.name}(${argStrings.join(", ")});
     }
 
-    function __${func.name}(I${functionArgs}) internal ${func.stateMutability} returns (${
+    function __${func.name}(${iFunctionArgs}) internal ${func.stateMutability} returns (${
       struct.name
     } memory ${RETURN_NAME}) {
       ${nameWithType} = ${NAME}(address(${name}));
-      return __${func.name}(${argStrings.join(", ")});
+      return __${func.name}(${[name, ...argStrings].join(", ")});
     }`;
 
     return [structString, funcString];

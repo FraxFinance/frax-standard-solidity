@@ -12,15 +12,17 @@ program
   .command("buildHelper")
   .argument("<abi-path>", "path to abi file")
   .argument("<name>", "name of Library Helper")
-  .action(async (abiPath, name) => {
+  .argument("<interfaceName>", "name of interface")
+  .action(async (abiPath, name, interfaceName) => {
     abiPath = path.resolve(abiPath);
     const abi = JSON.parse(fs.readFileSync(abiPath, "utf8"));
     const NAME = name;
+    const INAME = interfaceName;
     const RETURN_NAME = "_return";
     // main(abi, NAME, RETURN_NAME).then(str => {
     //   process.stdout.write(str)
     // })
-    process.stdout.write(await buildHelper(abi, NAME, RETURN_NAME));
+    process.stdout.write(await buildHelper(abi, NAME, INAME, RETURN_NAME));
   });
 
 program
