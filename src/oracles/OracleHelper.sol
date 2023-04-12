@@ -3,8 +3,11 @@ pragma solidity >=0.8.0;
 
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import { Vm } from "forge-std/Test.sol";
+import { AggregatorV3InterfaceStructHelper } from "./AggregatorV3InterfaceStructHelper.sol";
 
 library OracleHelper {
+    using AggregatorV3InterfaceStructHelper for AggregatorV3Interface;
+
     function setDecimals(AggregatorV3Interface _oracle, uint8 _decimals, Vm vm) public {
         vm.mockCall(
             address(_oracle),
@@ -59,6 +62,25 @@ library OracleHelper {
             address(_oracle),
             abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
             abi.encode(uint80(0), _price, 0, _lastUpdatedAt, uint80(0))
+        );
+    }
+
+    function setPrice(AggregatorV3Interface _oracle, uint256 price_, Vm vm) public returns (int256 _price) {
+        uint256 _updatedAt = _oracle.__latestRoundData().updatedAt;
+        _price = int256(price_);
+        vm.mockCall(
+            address(_oracle),
+            abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
+            abi.encode(uint80(0), _price, 0, _updatedAt, uint80(0))
+        );
+    }
+
+    function setUpdatedAt(AggregatorV3Interface _oracle, uint256 _updatedAt, Vm vm) public returns (int256 _price) {
+        int256 _price = _oracle.__latestRoundData().answer;
+        vm.mockCall(
+            address(_oracle),
+            abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
+            abi.encode(uint80(0), _price, 0, _updatedAt, uint80(0))
         );
     }
 }
