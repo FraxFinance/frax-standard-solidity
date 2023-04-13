@@ -1,13 +1,16 @@
 import { camelCase } from "change-case";
 import { AbiItem, Struct, Input } from "./types";
+import fs from "fs";
+import path from "path";
+import toml from "toml";
 
 const makeStruct = (func: AbiItem): Struct => {
   return {
     name: firstToUppercase(func.name) + "Return",
-    items: func.outputs.map((output) => {
+    items: func.outputs.map((output, index) => {
       return {
-        name: getOutputName(output),
-        type: getOutputType(output),
+        name: getOutputName(output, index),
+        type: getOutputType(output).replace(" memory", ""),
       };
     }),
   };
@@ -23,12 +26,43 @@ const getOutputType = (output: Input) => {
   }
 };
 
-const getOutputName = (output: Input) => {
-  return output.name.replace(/^_/, "");
+const getOutputName = (output: Input, index) => {
+  const cleanedName = output.name.replace(/^_/, "");
+  const name = cleanedName ? cleanedName : "returnVal" + index;
+  return name;
+};
+
+const getInputName = (input: Input, index) => {
+  const cleanedName = input.name.replace(/^_/, "");
+  const name = cleanedName ? cleanedName : "_arg" + index;
+  return name;
 };
 
 const firstToUppercase = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
+};
+
+const getOutDirectory = () => {
+  const foundryTomlPath = path.resolve("foundry.toml");
+  const foundryConfig = toml.parse(fs.readFileSync(foundryTomlPath, "utf-8"));
+  const outValue = foundryConfig.profile.default.out;
+  const outDirectory = path.resolve(outValue);
+  return outDirectory;
+};
+
+export const buildHelperAction = async (abiPath, name, options) => {
+  if (!abiPath.includes("/")) {
+    const outDirectory = getOutDirectory();
+    abiPath = path.join(outDirectory, abiPath + ".sol", `${abiPath}.json`);
+  } else {
+    abiPath = path.resolve(abiPath);
+  }
+
+  const abi = JSON.parse(fs.readFileSync(abiPath, "utf-8"));
+  const NAME = name;
+  const INAME = options?.i ?? null;
+  const RETURN_NAME = "_return";
+  process.stdout.write(await buildHelper(abi, NAME, INAME, RETURN_NAME));
 };
 
 export const buildHelper = async (abi, NAME, INAME, RETURN_NAME) => {
@@ -52,8 +86,8 @@ export const buildHelper = async (abi, NAME, INAME, RETURN_NAME) => {
         };
       }),
     };
-    const argTypeStrings = funcOut.args.map((arg) => arg.type + " " + arg.name);
-    const argStrings = funcOut.args.map((arg) => arg.name);
+    const argTypeStrings = funcOut.args.map((arg, index) => arg.type + " " + (arg.name ? arg.name : "arg" + index));
+    const argStrings = funcOut.args.map((arg, index) => (arg.name ? arg.name : "arg" + index));
     const name = `_${camelCase(NAME)}`;
     const nameType = `${NAME}`;
     const nameWithType = `${nameType} ${name}`;
@@ -65,21 +99,27 @@ export const buildHelper = async (abi, NAME, INAME, RETURN_NAME) => {
       struct.name
     } memory ${RETURN_NAME}) {
       ( ${structItemsString} ) = ${name}.${func.name}(${argStrings.join(", ")});
-    }
+    }`;
 
+    const interfaceString = `
     function __${func.name}(${iFunctionArgs}) internal ${func.stateMutability} returns (${
       struct.name
     } memory ${RETURN_NAME}) {
       ${nameWithType} = ${NAME}(address(${name}));
-      return __${func.name}(${[name, ...argStrings].join(", ")});
+      return __${func.name}(${[name, ...argStrings].filter(Boolean).join(", ")});
     }`;
 
-    return [structString, funcString];
+    return [structString, funcString, interfaceString];
   });
 
   const outputString = `
-  library ${NAME}Helper {
-    ${items.map((item) => item[0] + "\n" + item[1]).join("\n    ")}
+  // SPDX-License-Identifier: ISC
+  pragma solidity ^0.8.19;
+
+  import "src/${NAME}.sol";
+
+  library ${NAME}StructHelper {
+    ${items.map((item) => item[0] + "\n" + item[1] + "\n" + (INAME ? item[2] : "")).join("\n    ")}
   }`;
   return outputString;
 };

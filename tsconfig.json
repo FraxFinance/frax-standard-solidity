@@ -8,13 +8,14 @@
     "forceConsistentCasingInFileNames": true,
     "lib": ["ESNext"],
     "module": "commonjs",
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "noImplicitAny": false,
-    "removeComments": true,
+    "removeComments": false,
     "resolveJsonModule": true,
     "sourceMap": true,
     "strict": false,
-    "target": "ESNext"
+    "target": "ESNext",
+    "outDir": "dist"
   },
   "exclude": ["node_modules"],
   "include": ["script/**/*"]
