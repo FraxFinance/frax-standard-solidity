@@ -8,7 +8,7 @@
 
 ### Optimize for the reader (auditor), not the writer
 
-We explicitly optimize for the experience of the auditor, not the writer.  Implicitly this means that the speed of writing new code will decrease.  The ultimate goal of these rules is to provide a framework that allows new readers the ability to quickly understand the implications of the codebase and to reduce the surface area for auditor focus.
+We explicitly optimize for the experience of the reader, not the writer.  Implicitly this means that the speed of writing new code will decrease.  The ultimate goal of these rules is to provide a framework that allows new readers the ability to quickly understand the codebase and to reduce the surface area for auditor focus.
 
 ### Be consistent
 
@@ -26,9 +26,9 @@ Example:
 Private Repo: `fraxlend-dev`
 Public Repo: `fraxlend`
 
-### Utilize Prettier as the default formatter
+### Utilize forge + prettier as the default formatter
 
-This repo contains a .prettierrc.json file for use with prettier
+This repo contains a .prettierrc.json file for use with prettier.  Prettier is significantly smarter and has better line-wrapping heuristics than forge
 
 ### Utilize solhint as the default linter
 
@@ -60,7 +60,7 @@ import { SomeContract3 } from ".SomeContract3.sol";
 
 ### File Name should exactly match the name of the contract/interface/library
 
-### Files containing test contracts should start with word `Test` and end with `.t.sol`
+### Files containing tests should start with word `Test` and end with `.t.sol`
 
 Example: `TestFraxlendPairCore.t.sol`
 
@@ -70,13 +70,11 @@ Example: `deployFunctions.sol` (contains no contracts just a collection of free 
 
 ### Root directory should contains `src`, `test`, `script` directories
 
-`src/contracts` contains contracts and interfaces which are deployed
+`src` contains contracts and interfaces which are deployed
 
 `test` contains test contracts
 
 `script` contains files for scripting including repo management and deploy scripts
-
-`src` top-level contains any files which are shared across src/contracts and other places (e.g. Constants file)
 
 # Misc
 
@@ -224,19 +222,21 @@ Group related code together, be thoughtful about the order in which you would li
 5. custom errors
 6. Events should be defined in the interface.
 
-Avoid public functions, instead define an internal and external version of the function.  This allows optimizer to work better.
+Avoid public functions, instead define an internal and external version of the function.  This allows optimizer to work better. [Use best judgement on this]
 
 Explicitly assign default values to named return params for maximum readability
 
 Empty catch blocks should have comments explaining why they are acceptable
 
-Separate calculation and storage mutation functions when possible.  This aids in testing and separation of concerns, helps adhere to checks-effects-interactions patterns
+[Important] Separate calculation and storage mutation functions when possible.  This aids in testing and separation of concerns, helps adhere to checks-effects-interactions patterns.  For calculations, use storage pointers as arguments to reduce SLOADs if necessary.  Allows for the creation of preview functions to create a preview of some action, this is required for compose-ability (see ERC4626 for an example of preview functions)
 
-Avoid mutations when possible, gas savings is not a good reason to mutate.  Write readable code then optimize gas when necessary. Makes debugging easier and codde understanding more clear.
+Avoid mutations when possible, gas savings is not a good reason to mutate.  Write readable code then optimize gas when necessary. Makes debugging easier and code understanding more clear.
 
-Avoid modifiers, create internal functions in the form of _requireCondition() which will revert on failure.  This allows optimizer to reduce bytecode more efficiently, works better with IDE and analysis tools, and increases code intention without needing to jump to modifier definition.  Also order of execution is explicit.
+Avoid modifiers, create internal functions in the form of _requireCondition() which will revert on failure.  This allows optimizer to reduce bytecode more efficiently, works better with IDE and analysis tools, and increases code intention without needing to jump to modifier definition.  Also order of execution is explicit. [Exception: when you need to run code both BEFORE and AFTER the wrapped function]
 
 Use custom errors over require statements, saves both byte code and gas
+
+Dont return expressions, instead assign named return param variable
 
 # Tests
 
