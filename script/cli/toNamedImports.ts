@@ -10,7 +10,8 @@ export async function renameFileImports(filePath) {
       return !item.includes("forge-std") && !item.includes("frax-std");
     }) ?? [];
   const entries = importStatements.map((statement) => {
-    const name = statement.match(/\/([a-zA-Z0-9_]+)\./)?.[1] as string;
+    const matches = statement.match(/\/([a-zA-Z0-9_]+)\./g);
+    const name = matches?.[matches.length - 1].match(/[a-zA-Z0-9_]+/)?.[0] as string;
     const path = statement.match(/".*?";/)?.[0] as string;
     const replace = `import { ${name} } from ${path}`;
     return { original: statement, name, path, replace };

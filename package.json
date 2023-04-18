@@ -12,7 +12,8 @@
   },
   "scripts": {
     "test": "forge test",
-    "prepare": "husky install && npm link"
+    "prepare": "husky install && npm link",
+    "build": "tsc"
   },
   "author": "Drake Evans (twitter.com/drakeevansv1)",
   "license": "ISC",
