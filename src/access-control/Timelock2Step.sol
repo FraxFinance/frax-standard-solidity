@@ -36,43 +36,37 @@ abstract contract Timelock2Step {
         timelockAddress = msg.sender;
     }
 
-    /// @notice Emitted when timelock is transferred
-    error OnlyTimelock();
+    // ============================================================================================
+    // Functions: External Functions
+    // ============================================================================================
 
-    /// @notice Emitted when pending timelock is transferred
-    error OnlyPendingTimelock();
-
-    /// @notice The ```TimelockTransferStarted``` event is emitted when the timelock transfer is initiated
-    /// @param previousTimelock The address of the previous timelock
-    /// @param newTimelock The address of the new timelock
-    event TimelockTransferStarted(address indexed previousTimelock, address indexed newTimelock);
-
-    /// @notice The ```TimelockTransferred``` event is emitted when the timelock transfer is completed
-    /// @param previousTimelock The address of the previous timelock
-    /// @param newTimelock The address of the new timelock
-    event TimelockTransferred(address indexed previousTimelock, address indexed newTimelock);
-
-    /// @notice The ```_isSenderTimelock``` function checks if msg.sender is current timelock address
-    /// @return Whether or not msg.sender is current timelock address
-    function _isSenderTimelock() internal view returns (bool) {
-        return msg.sender == timelockAddress;
+    /// @notice The ```transferTimelock``` function initiates the timelock transfer
+    /// @dev Must be called by the current timelock
+    /// @param _newTimelock The address of the nominated (pending) timelock
+    function transferTimelock(address _newTimelock) external virtual {
+        _requireSenderIsTimelock();
+        _transferTimelock(_newTimelock);
     }
 
-    /// @notice The ```_requireTimelock``` function reverts if msg.sender is not current timelock address
-    function _requireTimelock() internal view {
-        if (msg.sender != timelockAddress) revert OnlyTimelock();
+    /// @notice The ```acceptTransferTimelock``` function completes the timelock transfer
+    /// @dev Must be called by the pending timelock
+    function acceptTransferTimelock() external virtual {
+        _requireSenderIsPendingTimelock();
+        _acceptTransferTimelock();
     }
 
-    /// @notice The ```_isSenderPendingTimelock``` function checks if msg.sender is pending timelock address
-    /// @return Whether or not msg.sender is pending timelock address
-    function _isSenderPendingTimelock() internal view returns (bool) {
-        return msg.sender == pendingTimelockAddress;
+    /// @notice The ```renounceTimelock``` function renounces the timelock after setting pending timelock to current timelock
+    /// @dev Pending timelock must be set to current timelock before renouncing, creating a 2-step renounce process
+    function renounceTimelock() external virtual {
+        _requireSenderIsTimelock();
+        _requireSenderIsPendingTimelock();
+        _transferTimelock(address(0));
+        _setTimelock(address(0));
     }
 
-    /// @notice The ```_requirePendingTimelock``` function reverts if msg.sender is not pending timelock address
-    function _requirePendingTimelock() internal view {
-        if (msg.sender != pendingTimelockAddress) revert OnlyPendingTimelock();
-    }
+    // ============================================================================================
+    // Functions: Internal Actions
+    // ============================================================================================
 
     /// @notice The ```_transferTimelock``` function initiates the timelock transfer
     /// @dev This function is to be implemented by a public function
@@ -97,27 +91,71 @@ abstract contract Timelock2Step {
         timelockAddress = _newTimelock;
     }
 
-    /// @notice The ```transferTimelock``` function initiates the timelock transfer
-    /// @dev Must be called by the current timelock
-    /// @param _newTimelock The address of the nominated (pending) timelock
-    function transferTimelock(address _newTimelock) external virtual {
-        _requireTimelock();
-        _transferTimelock(_newTimelock);
+    // ============================================================================================
+    // Functions: Internal Checks
+    // ============================================================================================
+
+    /// @notice The ```_isTimelock``` function checks if _address is current timelock address
+    /// @param _address The address to check against the timelock
+    /// @return Whether or not msg.sender is current timelock address
+    function _isTimelock(address _address) internal view returns (bool) {
+        return _address == timelockAddress;
     }
 
-    /// @notice The ```acceptTransferTimelock``` function completes the timelock transfer
-    /// @dev Must be called by the pending timelock
-    function acceptTransferTimelock() external virtual {
-        _requirePendingTimelock();
-        _acceptTransferTimelock();
+    /// @notice The ```_requireIsTimelock``` function reverts if _address is not current timelock address
+    /// @param _address The address to check against the timelock
+    function _requireIsTimelock(address _address) internal view {
+        if (!_isTimelock(_address)) revert SenderIsNotTimelock();
     }
 
-    /// @notice The ```renounceTimelock``` function renounces the timelock after setting pending timelock to current timelock
-    /// @dev Pending timelock must be set to current timelock before renouncing, creating a 2-step renounce process
-    function renounceTimelock() external virtual {
-        _requireTimelock();
-        _requirePendingTimelock();
-        _transferTimelock(address(0));
-        _setTimelock(address(0));
+    /// @notice The ```_requireSenderIsTimelock``` function reverts if msg.sender is not current timelock address
+    /// @dev This function is to be implemented by a public function
+    function _requireSenderIsTimelock() internal view {
+        _requireIsTimelock(msg.sender);
     }
+
+    /// @notice The ```_isPendingTimelock``` function checks if the _address is pending timelock address
+    /// @dev This function is to be implemented by a public function
+    /// @param _address The address to check against the pending timelock
+    /// @return Whether or not _address is pending timelock address
+    function _isPendingTimelock(address _address) internal view returns (bool) {
+        return _address == pendingTimelockAddress;
+    }
+
+    /// @notice The ```_requireIsPendingTimelock``` function reverts if the _address is not pending timelock address
+    /// @dev This function is to be implemented by a public function
+    /// @param _address The address to check against the pending timelock
+    function _requireIsPendingTimelock(address _address) internal view {
+        if (!_isPendingTimelock(_address)) revert SenderIsNotPendingTimelock();
+    }
+
+    /// @notice The ```_requirePendingTimelock``` function reverts if msg.sender is not pending timelock address
+    /// @dev This function is to be implemented by a public function
+    function _requireSenderIsPendingTimelock() internal view {
+        _requireIsPendingTimelock(msg.sender);
+    }
+
+    // ============================================================================================
+    // Functions: Events
+    // ============================================================================================
+
+    /// @notice The ```TimelockTransferStarted``` event is emitted when the timelock transfer is initiated
+    /// @param previousTimelock The address of the previous timelock
+    /// @param newTimelock The address of the new timelock
+    event TimelockTransferStarted(address indexed previousTimelock, address indexed newTimelock);
+
+    /// @notice The ```TimelockTransferred``` event is emitted when the timelock transfer is completed
+    /// @param previousTimelock The address of the previous timelock
+    /// @param newTimelock The address of the new timelock
+    event TimelockTransferred(address indexed previousTimelock, address indexed newTimelock);
+
+    // ============================================================================================
+    // Functions: Errors
+    // ============================================================================================
+
+    /// @notice Emitted when timelock is transferred
+    error SenderIsNotTimelock();
+
+    /// @notice Emitted when pending timelock is transferred
+    error SenderIsNotPendingTimelock();
 }
