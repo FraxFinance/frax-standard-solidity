@@ -9,7 +9,7 @@ pragma solidity ^0.8.19;
 // | /_/   /_/   \__,_/_/|_|  /_/   /_/_/ /_/\__,_/_/ /_/\___/\___/   |
 // |                                                                  |
 // ====================================================================
-// ========================== Timelock2Step ===========================
+// ========================== Operator2Step ===========================
 // ====================================================================
 // Frax Finance: https://github.com/FraxFinance
 
@@ -21,141 +21,141 @@ pragma solidity ^0.8.19;
 
 // ====================================================================
 
-/// @title Timelock2Step
+/// @title Operator2Step
 /// @author Drake Evans (Frax Finance) https://github.com/drakeevans
 /// @dev Inspired by OpenZeppelin's Ownable2Step contract
-/// @notice  An abstract contract which contains 2-step transfer and renounce logic for a timelock address
-abstract contract Timelock2Step {
-    /// @notice The pending timelock address
-    address public pendingTimelockAddress;
+/// @notice  An abstract contract which contains 2-step transfer and renounce logic for a operator address
+abstract contract Operator2Step {
+    /// @notice The pending operator address
+    address public pendingOperatorAddress;
 
-    /// @notice The current timelock address
-    address public timelockAddress;
+    /// @notice The current operator address
+    address public operatorAddress;
 
     constructor() {
-        timelockAddress = msg.sender;
+        operatorAddress = msg.sender;
     }
 
     // ============================================================================================
     // Functions: External Functions
     // ============================================================================================
 
-    /// @notice The ```transferTimelock``` function initiates the timelock transfer
-    /// @dev Must be called by the current timelock
-    /// @param _newTimelock The address of the nominated (pending) timelock
-    function transferTimelock(address _newTimelock) external virtual {
-        _requireSenderIsTimelock();
-        _transferTimelock(_newTimelock);
+    /// @notice The ```transferOperator``` function initiates the operator transfer
+    /// @dev Must be called by the current operator
+    /// @param _newOperator The address of the nominated (pending) operator
+    function transferOperator(address _newOperator) external virtual {
+        _requireSenderIsOperator();
+        _transferOperator(_newOperator);
     }
 
-    /// @notice The ```acceptTransferTimelock``` function completes the timelock transfer
-    /// @dev Must be called by the pending timelock
-    function acceptTransferTimelock() external virtual {
-        _requireSenderIsPendingTimelock();
-        _acceptTransferTimelock();
+    /// @notice The ```acceptTransferOperator``` function completes the operator transfer
+    /// @dev Must be called by the pending operator
+    function acceptTransferOperator() external virtual {
+        _requireSenderIsPendingOperator();
+        _acceptTransferOperator();
     }
 
-    /// @notice The ```renounceTimelock``` function renounces the timelock after setting pending timelock to current timelock
-    /// @dev Pending timelock must be set to current timelock before renouncing, creating a 2-step renounce process
-    function renounceTimelock() external virtual {
-        _requireSenderIsTimelock();
-        _requireSenderIsPendingTimelock();
-        _transferTimelock(address(0));
-        _setTimelock(address(0));
+    /// @notice The ```renounceOperator``` function renounces the operator after setting pending operator to current operator
+    /// @dev Pending operator must be set to current operator before renouncing, creating a 2-step renounce process
+    function renounceOperator() external virtual {
+        _requireSenderIsOperator();
+        _requireSenderIsPendingOperator();
+        _transferOperator(address(0));
+        _setOperator(address(0));
     }
 
     // ============================================================================================
     // Functions: Internal Actions
     // ============================================================================================
 
-    /// @notice The ```_transferTimelock``` function initiates the timelock transfer
+    /// @notice The ```_transferOperator``` function initiates the operator transfer
     /// @dev This function is to be implemented by a public function
-    /// @param _newTimelock The address of the nominated (pending) timelock
-    function _transferTimelock(address _newTimelock) internal {
-        pendingTimelockAddress = _newTimelock;
-        emit TimelockTransferStarted(timelockAddress, _newTimelock);
+    /// @param _newOperator The address of the nominated (pending) operator
+    function _transferOperator(address _newOperator) internal {
+        pendingOperatorAddress = _newOperator;
+        emit OperatorTransferStarted(operatorAddress, _newOperator);
     }
 
-    /// @notice The ```_acceptTransferTimelock``` function completes the timelock transfer
+    /// @notice The ```_acceptTransferOperator``` function completes the operator transfer
     /// @dev This function is to be implemented by a public function
-    function _acceptTransferTimelock() internal {
-        pendingTimelockAddress = address(0);
-        _setTimelock(msg.sender);
+    function _acceptTransferOperator() internal {
+        pendingOperatorAddress = address(0);
+        _setOperator(msg.sender);
     }
 
-    /// @notice The ```_setTimelock``` function sets the timelock address
+    /// @notice The ```_setOperator``` function sets the operator address
     /// @dev This function is to be implemented by a public function
-    /// @param _newTimelock The address of the new timelock
-    function _setTimelock(address _newTimelock) internal {
-        emit TimelockTransferred(timelockAddress, _newTimelock);
-        timelockAddress = _newTimelock;
+    /// @param _newOperator The address of the new operator
+    function _setOperator(address _newOperator) internal {
+        emit OperatorTransferred(operatorAddress, _newOperator);
+        operatorAddress = _newOperator;
     }
 
     // ============================================================================================
     // Functions: Internal Checks
     // ============================================================================================
 
-    /// @notice The ```_isTimelock``` function checks if _address is current timelock address
-    /// @param _address The address to check against the timelock
-    /// @return Whether or not msg.sender is current timelock address
-    function _isTimelock(address _address) internal view returns (bool) {
-        return _address == timelockAddress;
+    /// @notice The ```_isOperator``` function checks if _address is current operator address
+    /// @param _address The address to check against the operator
+    /// @return Whether or not msg.sender is current operator address
+    function _isOperator(address _address) internal view returns (bool) {
+        return _address == operatorAddress;
     }
 
-    /// @notice The ```_requireIsTimelock``` function reverts if _address is not current timelock address
-    /// @param _address The address to check against the timelock
-    function _requireIsTimelock(address _address) internal view {
-        if (!_isTimelock(_address)) revert SenderIsNotTimelock();
+    /// @notice The ```_requireIsOperator``` function reverts if _address is not current operator address
+    /// @param _address The address to check against the operator
+    function _requireIsOperator(address _address) internal view {
+        if (!_isOperator(_address)) revert SenderIsNotOperator();
     }
 
-    /// @notice The ```_requireSenderIsTimelock``` function reverts if msg.sender is not current timelock address
+    /// @notice The ```_requireSenderIsOperator``` function reverts if msg.sender is not current operator address
     /// @dev This function is to be implemented by a public function
-    function _requireSenderIsTimelock() internal view {
-        _requireIsTimelock(msg.sender);
+    function _requireSenderIsOperator() internal view {
+        _requireIsOperator(msg.sender);
     }
 
-    /// @notice The ```_isPendingTimelock``` function checks if the _address is pending timelock address
+    /// @notice The ```_isPendingOperator``` function checks if the _address is pending operator address
     /// @dev This function is to be implemented by a public function
-    /// @param _address The address to check against the pending timelock
-    /// @return Whether or not _address is pending timelock address
-    function _isPendingTimelock(address _address) internal view returns (bool) {
-        return _address == pendingTimelockAddress;
+    /// @param _address The address to check against the pending operator
+    /// @return Whether or not _address is pending operator address
+    function _isPendingOperator(address _address) internal view returns (bool) {
+        return _address == pendingOperatorAddress;
     }
 
-    /// @notice The ```_requireIsPendingTimelock``` function reverts if the _address is not pending timelock address
+    /// @notice The ```_requireIsPendingOperator``` function reverts if the _address is not pending operator address
     /// @dev This function is to be implemented by a public function
-    /// @param _address The address to check against the pending timelock
-    function _requireIsPendingTimelock(address _address) internal view {
-        if (!_isPendingTimelock(_address)) revert SenderIsNotPendingTimelock();
+    /// @param _address The address to check against the pending operator
+    function _requireIsPendingOperator(address _address) internal view {
+        if (!_isPendingOperator(_address)) revert SenderIsNotPendingOperator();
     }
 
-    /// @notice The ```_requirePendingTimelock``` function reverts if msg.sender is not pending timelock address
+    /// @notice The ```_requirePendingOperator``` function reverts if msg.sender is not pending operator address
     /// @dev This function is to be implemented by a public function
-    function _requireSenderIsPendingTimelock() internal view {
-        _requireIsPendingTimelock(msg.sender);
+    function _requireSenderIsPendingOperator() internal view {
+        _requireIsPendingOperator(msg.sender);
     }
 
     // ============================================================================================
     // Functions: Events
     // ============================================================================================
 
-    /// @notice The ```TimelockTransferStarted``` event is emitted when the timelock transfer is initiated
-    /// @param previousTimelock The address of the previous timelock
-    /// @param newTimelock The address of the new timelock
-    event TimelockTransferStarted(address indexed previousTimelock, address indexed newTimelock);
+    /// @notice The ```OperatorTransferStarted``` event is emitted when the operator transfer is initiated
+    /// @param previousOperator The address of the previous operator
+    /// @param newOperator The address of the new operator
+    event OperatorTransferStarted(address indexed previousOperator, address indexed newOperator);
 
-    /// @notice The ```TimelockTransferred``` event is emitted when the timelock transfer is completed
-    /// @param previousTimelock The address of the previous timelock
-    /// @param newTimelock The address of the new timelock
-    event TimelockTransferred(address indexed previousTimelock, address indexed newTimelock);
+    /// @notice The ```OperatorTransferred``` event is emitted when the operator transfer is completed
+    /// @param previousOperator The address of the previous operator
+    /// @param newOperator The address of the new operator
+    event OperatorTransferred(address indexed previousOperator, address indexed newOperator);
 
     // ============================================================================================
     // Functions: Errors
     // ============================================================================================
 
-    /// @notice Emitted when timelock is transferred
-    error SenderIsNotTimelock();
+    /// @notice Emitted when operator is transferred
+    error SenderIsNotOperator();
 
-    /// @notice Emitted when pending timelock is transferred
-    error SenderIsNotPendingTimelock();
+    /// @notice Emitted when pending operator is transferred
+    error SenderIsNotPendingOperator();
 }
