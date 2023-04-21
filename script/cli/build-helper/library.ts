@@ -1,8 +1,5 @@
 import { camelCase } from "change-case";
-import { AbiItem, Struct, Input } from "./types";
-import fs from "fs";
-import path from "path";
-import toml from "toml";
+import { AbiItem, Struct, Input } from "../types";
 
 const makeStruct = (func: AbiItem): Struct => {
   return {
@@ -42,23 +39,7 @@ const firstToUppercase = (str: string) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
 
-const getOutDirectory = () => {
-  const foundryTomlPath = path.resolve("foundry.toml");
-  const foundryConfig = toml.parse(fs.readFileSync(foundryTomlPath, "utf-8"));
-  const outValue = foundryConfig.profile.default.out;
-  const outDirectory = path.resolve(outValue);
-  return outDirectory;
-};
-
-export const buildHelperAction = async (abiPath, name, options) => {
-  if (!abiPath.includes("/")) {
-    const outDirectory = getOutDirectory();
-    abiPath = path.join(outDirectory, abiPath + ".sol", `${abiPath}.json`);
-  } else {
-    abiPath = path.resolve(abiPath);
-  }
-
-  const abi = JSON.parse(fs.readFileSync(abiPath, "utf-8"));
+export const buildHelperAction = async (abi, name, options) => {
   const NAME = name;
   const INAME = options?.i ?? null;
   const RETURN_NAME = "_return";
@@ -66,9 +47,6 @@ export const buildHelperAction = async (abiPath, name, options) => {
 };
 
 export const buildHelper = async (abi, NAME, INAME, RETURN_NAME) => {
-  if (Object.keys(abi).includes("abi")) {
-    abi = abi.abi;
-  }
   const funcs = (abi as AbiItem[]).filter((item) => item.type === "function" && item?.outputs?.length > 1);
 
   const items = funcs.map((func) => {
