@@ -32,8 +32,8 @@ abstract contract Timelock2Step {
     /// @notice The current timelock address
     address public timelockAddress;
 
-    constructor() {
-        timelockAddress = msg.sender;
+    constructor(address _timelockAddress) {
+        timelockAddress = _timelockAddress;
     }
 
     // ============================================================================================
