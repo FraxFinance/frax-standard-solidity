@@ -105,7 +105,7 @@ abstract contract Timelock2Step {
     /// @notice The ```_requireIsTimelock``` function reverts if _address is not current timelock address
     /// @param _address The address to check against the timelock
     function _requireIsTimelock(address _address) internal view {
-        if (!_isTimelock(_address)) revert AddressIsNotTimelock();
+        if (!_isTimelock(_address)) revert AddressIsNotTimelock(timelockAddress, _address);
     }
 
     /// @notice The ```_requireSenderIsTimelock``` function reverts if msg.sender is not current timelock address
@@ -126,7 +126,7 @@ abstract contract Timelock2Step {
     /// @dev This function is to be implemented by a public function
     /// @param _address The address to check against the pending timelock
     function _requireIsPendingTimelock(address _address) internal view {
-        if (!_isPendingTimelock(_address)) revert AddressIsNotPendingTimelock();
+        if (!_isPendingTimelock(_address)) revert AddressIsNotPendingTimelock(pendingTimelockAddress, _address);
     }
 
     /// @notice The ```_requirePendingTimelock``` function reverts if msg.sender is not pending timelock address
@@ -154,8 +154,8 @@ abstract contract Timelock2Step {
     // ============================================================================================
 
     /// @notice Emitted when timelock is transferred
-    error AddressIsNotTimelock();
+    error AddressIsNotTimelock(address timelockAddress, address actualAddress);
 
     /// @notice Emitted when pending timelock is transferred
-    error AddressIsNotPendingTimelock();
+    error AddressIsNotPendingTimelock(address pendingTimelockAddress, address actualAddress);
 }
