@@ -2,9 +2,9 @@
 
 import { Command } from "commander";
 import { buildHelperAction } from "./build-helper/library";
-import { buildHoaxHelperAction } from "./build-hoax-helper/library";
+import { buildHoaxHelperAction, hoaxAction } from "./build-hoax-helper/library";
 import { toNamedImports } from "./toNamedImports";
-import { getAbi } from "./utils";
+import { getAbi, newGetAbi } from "./utils";
 
 const program = new Command();
 
@@ -30,10 +30,24 @@ program
   });
 
 program
+  .command("hoax")
+  .argument("<paths...>", "paths to source files")
+  .action(async (paths, options) => {
+    await hoaxAction(paths);
+  });
+
+program
   .command("renameImports")
   .argument("<paths...>", "glob path to abi file")
   .action((paths) => {
     toNamedImports(paths);
+  });
+
+program
+  .command("abi")
+  .argument("<paths...>", "glob path to abi file")
+  .action(async (paths) => {
+    process.stdout.write(await newGetAbi(paths[0]));
   });
 
 program.parse();
