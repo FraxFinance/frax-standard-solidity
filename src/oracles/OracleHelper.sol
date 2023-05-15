@@ -75,6 +75,22 @@ library OracleHelper {
         );
     }
 
+    function setPriceWithE18Param(
+        AggregatorV3Interface _oracle,
+        uint256 price_,
+        Vm vm
+    ) public returns (int256 returnPrice) {
+        uint256 _updatedAt = _oracle.__latestRoundData().updatedAt;
+        uint256 _decimals = _oracle.decimals();
+        price_ = (price_ * 10 ** _decimals) / 1e18;
+        returnPrice = int256(price_);
+        vm.mockCall(
+            address(_oracle),
+            abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
+            abi.encode(uint80(0), returnPrice, 0, _updatedAt, uint80(0))
+        );
+    }
+
     function setUpdatedAt(AggregatorV3Interface _oracle, uint256 _updatedAt, Vm vm) public returns (int256 _price) {
         int256 _price = _oracle.__latestRoundData().answer;
         vm.mockCall(
