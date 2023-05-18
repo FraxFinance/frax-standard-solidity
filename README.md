@@ -247,6 +247,8 @@ Why: This allows optimizer to reduce bytecode more efficiently, works better wit
 ### Dont return expressions, instead assign named return param variable
 
 # Tests
+### Write tests in a way that you can run the test suite against deployed constracts afterwards
+See: [Fraxlend Oracles Test Example](https://github.com/FraxFinance/fraxlend-oracles-dev/blob/master/test/e2e/TestFraxUsdcCurveLpDualOracle.t.sol#L27)
 
 ### Separate scenario setup and test functions.
 
