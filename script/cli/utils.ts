@@ -2,7 +2,13 @@ import path from "path";
 import fs from "fs";
 import toml from "toml";
 import { glob } from "glob";
-import solc from "solc";
+import { execSync } from "child_process";
+
+export const getFilesFromFraxToml = () => {
+  const fraxConfig = parseFraxToml();
+  const files = fraxConfig.files;
+  return files;
+};
 
 export const getFileContractNames = (fileContents) => {
   const contractNames = [];
@@ -64,19 +70,29 @@ export const getAbi = (abiPath) => {
   return abi;
 };
 
-export const getOutDirectory = () => {
+const parseFoundryToml = () => {
   const foundryTomlPath = path.resolve("foundry.toml");
   const foundryConfigString = fs.readFileSync(foundryTomlPath, "utf-8").toString();
   const foundryConfig = toml.parse(foundryConfigString);
+  return foundryConfig;
+};
+
+export const getOutDirectory = () => {
+  const foundryConfig = parseFoundryToml();
   const outValue = foundryConfig.profile.default.out;
   const outDirectory = path.resolve(outValue);
   return outDirectory;
 };
 
-export const getHelperDirectory = () => {
+const parseFraxToml = () => {
   const fraxTomlPath = path.resolve("frax.toml");
   const fraxConfigString = fs.readFileSync(fraxTomlPath, "utf-8").toString();
   const fraxConfig = toml.parse(fraxConfigString);
+  return fraxConfig;
+};
+
+export const getHelperDirectory = () => {
+  const fraxConfig = parseFraxToml();
   const helperValue = fraxConfig.helper_dir;
   const helperDirectory = path.resolve(helperValue);
   return helperDirectory;
@@ -103,25 +119,67 @@ export const isDynamicType = (internalType) => {
 };
 
 export const newGetAbi = async (filePath) => {
-  const fileContents = fs.readFileSync(filePath).toString();
-  console.log("file: utils.ts:108 ~ newGetAbi ~ fileContents:", fileContents);
+  const contractBasename = path.basename(filePath);
   const input = {
     language: "Solidity",
     sources: {
       [path.basename(filePath)]: {
-        content: fileContents,
+        urls: [filePath],
       },
     },
     settings: {
+      remappings: remappingsToArray(),
+      metadata: {
+        bytecodeHash: "none",
+        appendCBOR: true,
+      },
       outputSelection: {
-        "*": {
+        [contractBasename]: {
           "*": ["abi"],
         },
       },
+      evmVersion: "london",
+      libraries: {},
     },
   };
-
-  const output = solc.compile(JSON.stringify(input), { import: true });
+  const fileName = `${Date.now().toString()}${contractBasename}${Math.random()}.json`;
+  fs.writeFileSync(fileName, JSON.stringify(input));
+  const command = `solc --pretty-json ${getIncludeSources()
+    .map((item) => "--include-path " + item)
+    .join(" ")} --base-path . --standard-json ${fileName}`;
+  fs.unlink(fileName, () => {});
+  const output = execSync(command).toString();
   const parsed = JSON.parse(output);
-  return parsed;
+  delete parsed.sources;
+  return parsed.contracts[contractBasename];
 };
+
+const remappingsToArray = () => {
+  const contents = fs.readFileSync("remappings.txt").toString();
+  const lines = contents.split("\n").filter(Boolean);
+  return lines;
+};
+
+const getIncludeSources = () => {
+  const foundryConfig = parseFoundryToml();
+  const includeSources = foundryConfig.profile.default.libs;
+  return includeSources;
+};
+
+function importCallbackGenerator(includeSources) {
+  return function readFileCallback(sourcePath) {
+    const prefixes = includeSources;
+    for (const prefix of prefixes) {
+      const prefixedSourcePath = (prefix ? prefix + "/" : "") + sourcePath;
+
+      if (fs.existsSync(prefixedSourcePath)) {
+        try {
+          return { contents: fs.readFileSync(prefixedSourcePath).toString("utf8") };
+        } catch (e) {
+          return { error: "Error reading " + prefixedSourcePath + ": " + e };
+        }
+      }
+    }
+    return { error: "File not found inside the base path or any of the include paths." };
+  };
+}

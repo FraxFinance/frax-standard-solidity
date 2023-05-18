@@ -1,23 +1,27 @@
 import { camelCase } from "change-case";
 import { AbiItem, Struct, Input } from "../types";
-import { isDynamicType, getFileContractNames, getOutDirectory, getAbiFromFile, getHelperDirectory } from "../utils";
+import {
+  isDynamicType,
+  getFileContractNames,
+  getOutDirectory,
+  getAbiFromFile,
+  getHelperDirectory,
+  newGetAbi,
+} from "../utils";
 import fs from "fs";
 import path from "path";
-import { glob } from "glob";
 
 export const hoaxAction = (paths) => {
   paths.forEach(processOnePath);
 };
 
 const processOnePath = async (filePath) => {
-  const outDirectory = getOutDirectory();
-  const folderName = path.basename(filePath);
-  const filePaths = await glob(`${outDirectory}/${folderName}/**/*.json`);
+  const abis = (await newGetAbi(filePath)) as { [key: string]: { abi: AbiItem } };
 
-  const abiWithContractName = filePaths.map((filePath) => {
+  const abiWithContractName = Object.entries(abis).map(([contractName, { abi }]) => {
     return {
-      contractName: path.basename(filePath, ".json"),
-      abi: getAbiFromFile(filePath),
+      contractName,
+      abi,
     };
   });
 

@@ -6,7 +6,7 @@
 
 # Principles
 
-### Optimize for the reader (auditor), not the writer
+### Optimize for the reader (auditor) and fellow developers, not the writer
 
 We explicitly optimize for the experience of the reader, not the writer.  Implicitly this means that the speed of writing new code will decrease.  The ultimate goal of these rules is to provide a framework that allows new readers the ability to quickly understand the codebase and to reduce the surface area for auditor focus.
 
@@ -47,7 +47,7 @@ Utilize an import file if you would like to group files together by namespace fo
 Example:
 
 ```solidity
-// This file aggregates the difference contracts and should be named appropriately
+// This file aggregates the different contracts and should be named appropriately
 import { SomeContract } from ".SomeContract.sol";
 import { SomeContract1 } from ".SomeContract1.sol";
 import { SomeContract2 } from ".SomeContract2.sol";
@@ -92,9 +92,10 @@ Open and composable: TODO
 
 ### Do not rely on via-ir to solve stack-too-deep errors
 
-Why: via-ir is slow and reduces testing speed.  If reaching stack too deep complexity it probably too high.  For src code, reduce complexity for tests use param/return structs.
+Why: via-ir is slow and reduces testing speed.  If reaching `stack too deep` your code complexity it probably too high.  For src code, reduce complexity, for tests use param/return structs.
 
 ### Use named input params when invoking functions
+Required for functions with 2+ parameters
 
 Example:
 
@@ -111,7 +112,7 @@ fooBar(address(345), address(123));
 Why: 
 
 - Reduces potential bugs introduced during refactors which change order of functions
-- Reduces overhead for readers as code intention is more clear, less need to look at function definition
+- Reduces overhead for readers as code intention is more clear, eliminates need to look at function definition
 
 # Source File Structure
 
@@ -135,6 +136,7 @@ Why:
 ### Use named imports { SomeContract } from "./SomeContract.sol";
 
 Why:
+- [Forge best practices](https://book.getfoundry.sh/tutorials/best-practices)
 - Reduces the need for the reader to have additional context when coming across an identifier.  Because identifiers are otherwise inherited, the location of an identifier is not known to the reader without a global search or IDE tooling
 - Solves issues with naming collisions
 - Makes compilation (and therefore testing) faster and makes verified code smaller
@@ -149,9 +151,9 @@ Why: Helps solve stack-too-deep errors, consistency, reinforces order of constru
 
 ### Internal and private functions should be prepended with an underscore _someInternalFunction _somePrivateFunction
 
-### Avoid abbreviations and acronyms in variables names, prefer descriptive variable names when possible
+## Avoid abbreviations and acronyms in variables names, prefer descriptive variable names
 
-Code should be self-documenting.  Give as descriptive a name as possible, within reason. Do not worry about saving horizontal space as it is far more important to make your code immediately understandable by a new reader. Do not use abbreviations that are ambiguous or unfamiliar to readers outside your project, and do not abbreviate by deleting letters within a word.
+Code should be self-documenting.  Give as descriptive a name as possible. It is far more important to make your code immediately understandable by a new reader than to optimize line wrapping. Do not use abbreviations that are ambiguous or unfamiliar to readers outside your project, and do not abbreviate by deleting letters within a word.
 
 | Allowed |  |
 | --- | --- |
@@ -190,7 +192,7 @@ function sendMessage(string memory _messageBody, string storage messageHeader);
 
 ### Local variable names are written in _camelCase and prepended with an underscore to differentiate from storage variables
 
-### Use google’s camelCase algorithm to handle acronyms/abbreviations and edge cases
+## Use google’s camelCase algorithm to handle acronyms/abbreviations and edge cases
 
 Additional clarity: for words like iOS veFXS or gOhm, when prefix letter is single treat as one word, when prefix letters are >1 (frxETH or veFXS) treat prefix as separate word:
 
@@ -209,11 +211,14 @@ Additional clarity: for words like iOS veFXS or gOhm, when prefix letter is sing
 
 ## Code Structure / Architecture
 
-Be thoughtful about breaking up code and inheriting.  One pattern used in fraxlend is a separation of view helper functions and the core logic.  This is a separation by threat model. 
+### Be thoughtful about breaking up code and inheriting.
+One pattern used in fraxlend is a separation of view helper functions and the core logic.  This is a separation by threat model. 
 
-Group related code together, be thoughtful about the order in which you would like to present information to a new reader.  For internal functions used in a single place, group them next to the external function they are used in.  If they are used in multiple places follow guidelines below.  
+ ### Group related code together
+ Be thoughtful about the order in which you would like to present information to a new reader.  For internal functions used in a single place, group them next to the external function they are used in.  If they are used in multiple places follow guidelines below.  
 
 ### Within a contract code should be in the following order:
+[Open for discussion on this item]
 
 1. storage variables
 2. constructor
@@ -222,35 +227,38 @@ Group related code together, be thoughtful about the order in which you would li
 5. custom errors
 6. Events should be defined in the interface.
 
-Avoid public functions, instead define an internal and external version of the function.  This allows optimizer to work better. [Use best judgement on this]
 
-Explicitly assign default values to named return params for maximum readability
+### Explicitly assign default values to named return params for maximum readability
 
-Empty catch blocks should have comments explaining why they are acceptable
+### Empty catch blocks should have comments explaining why they are acceptable
 
-[Important] Separate calculation and storage mutation functions when possible.  This aids in testing and separation of concerns, helps adhere to checks-effects-interactions patterns.  For calculations, use storage pointers as arguments to reduce SLOADs if necessary.  Allows for the creation of preview functions to create a preview of some action, this is required for compose-ability (see ERC4626 for an example of preview functions)
+### [Important] Separate calculation and storage mutation functions when possible.
+This aids in testing and separation of concerns, helps adhere to checks-effects-interactions patterns.  For calculations, use storage pointers as arguments to reduce SLOADs if necessary.  Allows for the creation of preview functions to create a preview of some action, this is required for compose-ability (see ERC4626 for an example of preview functions)
 
-Avoid mutations when possible, gas savings is not a good reason to mutate.  Write readable code then optimize gas when necessary. Makes debugging easier and code understanding more clear.
+### Avoid mutations when possible
+Gas savings is not a good reason to mutate.  Write readable code then optimize gas when necessary. Makes debugging easier and code understanding more clear.
 
-Avoid modifiers, create internal functions in the form of _requireCondition() which will revert on failure.  This allows optimizer to reduce bytecode more efficiently, works better with IDE and analysis tools, and increases code intention without needing to jump to modifier definition.  Also order of execution is explicit. [Exception: when you need to run code both BEFORE and AFTER the wrapped function]
+### Avoid modifiers unless you need to take action both before and after function invocation
+Create internal functions in the form of _requireCondition() which will revert on failure.
+Why: This allows optimizer to reduce bytecode more efficiently, works better with IDE and analysis tools, and increases code intention without needing to jump to modifier definition.  Also order of execution is explicit. [Exception: when you need to run code both BEFORE and AFTER the wrapped function]
 
-Use custom errors over require statements, saves both byte code and gas
+### Use custom errors over require statements, saves both byte code and gas
 
-Dont return expressions, instead assign named return param variable
+### Dont return expressions, instead assign named return param variable
 
 # Tests
 
-Separate scenario setup and test functions.
+### Separate scenario setup and test functions.
 
-Utilize fuzz tests
+### Utilize fuzz tests
 
-Use setUp() sparingly
+### Use setUp() sparingly
 
-Separate helpers to separate file
+### Separate helpers to separate file
 
-Create invariant assertions that can be used in multiple places
+### Create invariant assertions that can be used in multiple places
 
-Dont sleep on echidna
+### Dont sleep on echidna
 
 ## Pre-Audit Checklist
 
