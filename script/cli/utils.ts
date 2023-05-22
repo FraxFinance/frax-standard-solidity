@@ -151,7 +151,7 @@ export const newGetAbi = async (filePath) => {
   const command = `solc --pretty-json ${getIncludeSources()
     .map((item) => "--include-path " + item)
     .join(" ")} --base-path . --standard-json ${fileName}`;
-  // fs.unlink(fileName, () => {});
+  fs.unlink(fileName, () => {});
   const output = execSync(command).toString();
   const parsed = JSON.parse(output);
   console.log("file: utils.ts:153 ~ .join ~ parsed:", parsed);
