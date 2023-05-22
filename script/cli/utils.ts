@@ -115,6 +115,10 @@ export const isDynamicType = (internalType) => {
     return true;
   }
 
+  if (internalType.includes("string")) {
+    return true;
+  }
+
   return false;
 };
 
@@ -123,7 +127,7 @@ export const newGetAbi = async (filePath) => {
   const input = {
     language: "Solidity",
     sources: {
-      [path.basename(filePath)]: {
+      [filePath]: {
         urls: [filePath],
       },
     },
@@ -134,7 +138,7 @@ export const newGetAbi = async (filePath) => {
         appendCBOR: true,
       },
       outputSelection: {
-        [contractBasename]: {
+        [filePath]: {
           "*": ["abi"],
         },
       },
@@ -147,11 +151,12 @@ export const newGetAbi = async (filePath) => {
   const command = `solc --pretty-json ${getIncludeSources()
     .map((item) => "--include-path " + item)
     .join(" ")} --base-path . --standard-json ${fileName}`;
-  fs.unlink(fileName, () => {});
+  // fs.unlink(fileName, () => {});
   const output = execSync(command).toString();
   const parsed = JSON.parse(output);
+  console.log("file: utils.ts:153 ~ .join ~ parsed:", parsed);
   delete parsed.sources;
-  return parsed.contracts[contractBasename];
+  return parsed.contracts[filePath];
 };
 
 const remappingsToArray = () => {
