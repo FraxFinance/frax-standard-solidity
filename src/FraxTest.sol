@@ -20,4 +20,6 @@ import {
     Test
 } from "forge-std/Test.sol";
 
-abstract contract FraxTest is Test {}
+import { VmHelper } from "./VmHelper.sol";
+
+abstract contract FraxTest is VmHelper, Test {}
