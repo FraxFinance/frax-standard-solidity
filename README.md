@@ -78,6 +78,10 @@ Example: `deployFunctions.sol` (contains no contracts just a collection of free 
 
 # Misc
 
+### Use npm to install github dependencies
+Why: submodules dont provide lockfiles or commit binding.  We need to be sure that we are running/deploying the exact same code across machines.<br>
+Why: Breaking changes are common and explicitly upgrading can prevent issues across machines
+
 ### Prefer node_module packages over github packages for secure code
 
 Why: Latest code can be unstable and npm packages are typically release candidates
@@ -92,7 +96,7 @@ Open and composable: TODO
 
 ### Do not rely on via-ir to solve stack-too-deep errors
 
-Why: via-ir is slow and reduces testing speed.  If reaching `stack too deep` your code complexity it probably too high.  For src code, reduce complexity, for tests use param/return structs.
+Why: via-ir is slow and reduces testing speed.  If reaching `stack too deep` your code complexity is probably too high.  For src code, reduce complexity, for tests use param/return structs.
 
 ### Use named input params when invoking functions
 Required for functions with 2+ parameters
@@ -233,7 +237,8 @@ One pattern used in fraxlend is a separation of view helper functions and the co
 ### Empty catch blocks should have comments explaining why they are acceptable
 
 ### [Important] Separate calculation and storage mutation functions when possible.
-This aids in testing and separation of concerns, helps adhere to checks-effects-interactions patterns.  For calculations, use storage pointers as arguments to reduce SLOADs if necessary.  Allows for the creation of preview functions to create a preview of some action, this is required for compose-ability (see ERC4626 for an example of preview functions)
+This aids in testing and separation of concerns, helps adhere to checks-effects-interactions patterns.  For calculations, use storage pointers as arguments to reduce SLOADs if necessary.  Allows for the creation of preview functions to create a preview of some action, this is required for compose-ability (see ERC4626 for an example of preview functions)<br>
+See: TODO: governance example in delegation
 
 ### Avoid mutations when possible
 Gas savings is not a good reason to mutate.  Write readable code then optimize gas when necessary. Makes debugging easier and code understanding more clear.
@@ -241,20 +246,54 @@ Gas savings is not a good reason to mutate.  Write readable code then optimize g
 ### Avoid modifiers unless you need to take action both before and after function invocation
 Create internal functions in the form of _requireCondition() which will revert on failure.
 Why: This allows optimizer to reduce bytecode more efficiently, works better with IDE and analysis tools, and increases code intention without needing to jump to modifier definition.  Also order of execution is explicit. [Exception: when you need to run code both BEFORE and AFTER the wrapped function]
+``` solidity
+    // BAD
+    modifier TimelockOnly() {
+        if (msg.sender != TIMELOCK_ADDRESS) revert()
+    }
+
+    function WithdrawFees() TimelockOnly {
+        // some code
+    }
+
+    // GOOD
+    function _requireSenderIsTimelock() internal {
+        if (msg.sender != TIMELOCK_ADDRESS) revert Unauthorized();
+    }
+
+    function WithdrawFees() {
+        _requireSenderIsTimelock();
+        // some code
+    }
+```
+
 
 ### Use custom errors over require statements, saves both byte code and gas
+```solidity
+    // Bad
+    function _requireSenderIsTimelock() internal {
+        require(msg.sender = TIMELOCK_ADDRESS, "unauthorized");
+    }
+
+    // Good
+    function _requireSenderIsTimelock() internal {
+        if (msg.sender != TIMELOCK_ADDRESS) revert Unauthorized();
+    }
+```
+
 
 ### Dont return expressions, instead assign named return param variable
 
-# Tests
-### Write tests in a way that you can run the test suite against deployed constracts afterwards
-See: [Fraxlend Oracles Test Example](https://github.com/FraxFinance/fraxlend-oracles-dev/blob/master/test/e2e/TestFraxUsdcCurveLpDualOracle.t.sol#L27)
 
+# Tests
 ### Separate scenario setup and test functions.
+Why: Tests for impure functions should be tested under a variety of state conditions.  Separating test assertions and scenario setups allows for re-using code across multiple scenarios. See 
+
+### Write tests in a way that you can run the test suite against deployed contracts afterwards
+See: [Frax Governance Test Example](https://github.com/FraxFinance/frax-governance-dev/blob/098a14115b447f4de94902a4ff13882ac1059ee5/test/TestFraxGovernorFork.t.sol)<br>
+See: [Fraxlend Oracles Test Example](https://github.com/FraxFinance/fraxlend-oracles-dev/blob/master/test/e2e/TestFraxUsdcCurveLpDualOracle.t.sol)
 
 ### Utilize fuzz tests
-
-### Use setUp() sparingly
 
 ### Separate helpers to separate file
 
@@ -262,16 +301,14 @@ See: [Fraxlend Oracles Test Example](https://github.com/FraxFinance/fraxlend-ora
 
 ### Dont sleep on echidna
 
-## Pre-Audit Checklist
+# Pre-Audit Checklist
 
-- 100% coverage
-- Helper library to wrap functions which return tuples, use a double underscore __nameOfFunction convention
-- Have harness contract to expose internal functions for unit testing if necessary
+- 100% test coverage
+- Adheres to style guide
 - Example deployment instructions
 - Slither and Mythril instructions and remaining issues addressed
 - Video walkthrough of each external function flow
 - Access control documentation
 - Threat modeling documentation
-- Full natspec with slither @optional items included
-    - Heavy commenting aimed at new reader
+- Heavy commenting aimed at new reader
 - No TODO, console.log, or commented out code
