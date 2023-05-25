@@ -202,14 +202,14 @@ Additional clarity: for words like iOS veFXS or gOhm, when prefix letter is sing
 
 | Prose form | Correct | Incorrect |
 | --- | --- | --- |
-| veFXS | VeFxs | veFXS |
+| veFXS | veFxs | veFXS |
 | some gOhm item | someGohmItem | someGOHMItem |
-| XML HTTP request | XmlHttpRequest | XMLHTTPRequest |
+| XML HTTP request | xmlHttpRequest | XMLHTTPRequest |
 | iOS | ios | IOS |
 | new customer ID | newCustomerId | newCustomerID |
 | inner stopwatch | innerStopwatch | innerStopWatch |
 | supports IPv6 on iOS? | supportsIpv6OnIos | supportsIPv6OnIOS |
-| YouTube importer | YouTubeImporter | YoutubeImporter* |
+| YouTube importer | youTubeImporter | YoutubeImporter* |
 | gOHM ERC-20 | gohmErc20 | gOHMERC20 |
 | some veFXS item | someVeFxsItem | someVeFXSItem |
 
