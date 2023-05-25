@@ -1,3 +1,5 @@
+pragma solidity >=0.8.19;
+
 import { CommonBase } from "forge-std/Base.sol";
 
 contract VmHelper is CommonBase {
