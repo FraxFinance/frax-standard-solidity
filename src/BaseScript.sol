@@ -22,17 +22,14 @@ abstract contract BaseScript is Script {
         vm.stopBroadcast();
     }
 
+    struct DeployReturn {
+        address _address;
+        bytes _constructorParams;
+        string _contractName;
+    }
+
     function _updateEnv(address _address, bytes memory _constructorArgs, string memory _name) internal {
-        string[] memory _inputs = new string[](8);
-        _inputs[0] = "npx";
-        _inputs[1] = "ts-node";
-        _inputs[2] = "-T";
-        _inputs[3] = "lib/frax-standard-solidity/script/updateEnv.ts";
-        _inputs[4] = block.chainid.toString();
-        _inputs[5] = _name;
-        _inputs[6] = _address.toHexString();
-        console.logBytes(_constructorArgs);
-        vm.ffi(_inputs);
+        console.log("_updateEnv is deprecated");
     }
 
     function deploy(
@@ -43,5 +40,11 @@ abstract contract BaseScript is Script {
         console.logBytes(_constructorParams);
         console.log(_contractName, "deployed to _address:", _address);
         _updateEnv(_address, _constructorParams, _contractName);
+    }
+
+    function deploy(
+        function() returns (DeployReturn memory) _deployFunction
+    ) internal broadcaster returns (DeployReturn memory _return) {
+        _return = _deployFunction();
     }
 }
