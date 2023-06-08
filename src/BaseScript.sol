@@ -24,8 +24,8 @@ abstract contract BaseScript is Script {
 
     struct DeployReturn {
         address _address;
-        bytes _constructorParams;
-        string _contractName;
+        bytes constructorParams;
+        string contractName;
     }
 
     function _updateEnv(address _address, bytes memory _constructorArgs, string memory _name) internal {
