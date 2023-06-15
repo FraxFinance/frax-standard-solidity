@@ -12,8 +12,8 @@ library BytesHelper {
         return BytesLib.concatStorage(_preBytes, _postBytes);
     }
 
-    function slice(bytes memory _bytes, uint256 _start, uint256 _length) internal pure returns (bytes memory) {
-        return BytesLib.slice(_bytes, _start, _length);
+    function slice(bytes memory _bytes, uint256 _start, uint256 _end) internal pure returns (bytes memory) {
+        return BytesLib.slice(_bytes, _start, _end - _start);
     }
 
     function toAddress(bytes memory _bytes, uint256 _start) internal pure returns (address) {
