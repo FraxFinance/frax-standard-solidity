@@ -59,4 +59,10 @@ contract VmHelper is CommonBase {
         result.currentTimestamp = block.timestamp;
         result.currentBlockNumber = block.number;
     }
+
+    function labelAndDeal(address _address, string memory _label) public returns (address payable) {
+        vm.label(_address, _label);
+        vm.deal(_address, 1000e18);
+        return payable(_address);
+    }
 }
