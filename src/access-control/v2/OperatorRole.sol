@@ -13,7 +13,7 @@ abstract contract OperatorRole {
     // TODO fix headings
     // Externals
 
-    function setOperator() external virtual {}
+    function setOperator(address _newOperator) external virtual {}
 
     // Internal actions
     function _setOperator(address _newOperator) internal {
