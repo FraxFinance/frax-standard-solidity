@@ -199,6 +199,7 @@ function sendMessage(string memory _messageBody, string storage messageHeader);
 ## Use google’s camelCase algorithm to handle acronyms/abbreviations and edge cases
 
 Additional clarity: for words like iOS veFXS or gOhm, when prefix letter is single treat as one word, when prefix letters are >1 (frxETH or veFXS) treat prefix as separate word:
+AdditionalInfo: [Google camelCase Algorithm](https://google.github.io/styleguide/jsguide.html#naming-camel-case-defined)
 
 | Prose form | Correct | Incorrect |
 | --- | --- | --- |
