@@ -21,20 +21,17 @@ pragma solidity ^0.8.19;
 
 // ====================================================================
 
+import { OperatorRole } from "./OperatorRole.sol";
+
 /// @title Operator2Step
 /// @author Drake Evans (Frax Finance) https://github.com/drakeevans
 /// @dev Inspired by OpenZeppelin's Ownable2Step contract
 /// @notice  An abstract contract which contains 2-step transfer and renounce logic for a operator address
-abstract contract Operator2Step {
+abstract contract OperatorRole2Step is OperatorRole {
     /// @notice The pending operator address
     address public pendingOperatorAddress;
 
-    /// @notice The current operator address
-    address public operatorAddress;
-
-    constructor() {
-        operatorAddress = msg.sender;
-    }
+    constructor(address _operatorAddress) OperatorRole(_operatorAddress) {}
 
     // ============================================================================================
     // Functions: External Functions
@@ -68,6 +65,11 @@ abstract contract Operator2Step {
     // Functions: Internal Actions
     // ============================================================================================
 
+    /// @notice The ```OperatorTransferStarted``` event is emitted when the operator transfer is initiated
+    /// @param previousOperator The address of the previous operator
+    /// @param newOperator The address of the new operator
+    event OperatorTransferStarted(address indexed previousOperator, address indexed newOperator);
+
     /// @notice The ```_transferOperator``` function initiates the operator transfer
     /// @dev This function is to be implemented by a public function
     /// @param _newOperator The address of the nominated (pending) operator
@@ -83,36 +85,9 @@ abstract contract Operator2Step {
         _setOperator(msg.sender);
     }
 
-    /// @notice The ```_setOperator``` function sets the operator address
-    /// @dev This function is to be implemented by a public function
-    /// @param _newOperator The address of the new operator
-    function _setOperator(address _newOperator) internal {
-        emit OperatorTransferred(operatorAddress, _newOperator);
-        operatorAddress = _newOperator;
-    }
-
     // ============================================================================================
     // Functions: Internal Checks
     // ============================================================================================
-
-    /// @notice The ```_isOperator``` function checks if _address is current operator address
-    /// @param _address The address to check against the operator
-    /// @return Whether or not msg.sender is current operator address
-    function _isOperator(address _address) internal view returns (bool) {
-        return _address == operatorAddress;
-    }
-
-    /// @notice The ```_requireIsOperator``` function reverts if _address is not current operator address
-    /// @param _address The address to check against the operator
-    function _requireIsOperator(address _address) internal view {
-        if (!_isOperator(_address)) revert SenderIsNotOperator();
-    }
-
-    /// @notice The ```_requireSenderIsOperator``` function reverts if msg.sender is not current operator address
-    /// @dev This function is to be implemented by a public function
-    function _requireSenderIsOperator() internal view {
-        _requireIsOperator(msg.sender);
-    }
 
     /// @notice The ```_isPendingOperator``` function checks if the _address is pending operator address
     /// @dev This function is to be implemented by a public function
@@ -134,20 +109,6 @@ abstract contract Operator2Step {
     function _requireSenderIsPendingOperator() internal view {
         _requireIsPendingOperator(msg.sender);
     }
-
-    // ============================================================================================
-    // Functions: Events
-    // ============================================================================================
-
-    /// @notice The ```OperatorTransferStarted``` event is emitted when the operator transfer is initiated
-    /// @param previousOperator The address of the previous operator
-    /// @param newOperator The address of the new operator
-    event OperatorTransferStarted(address indexed previousOperator, address indexed newOperator);
-
-    /// @notice The ```OperatorTransferred``` event is emitted when the operator transfer is completed
-    /// @param previousOperator The address of the previous operator
-    /// @param newOperator The address of the new operator
-    event OperatorTransferred(address indexed previousOperator, address indexed newOperator);
 
     // ============================================================================================
     // Functions: Errors
