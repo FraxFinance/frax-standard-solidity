@@ -11,8 +11,28 @@ import {
 import fs from "fs";
 import path from "path";
 
-export const hoaxAction = (paths) => {
-  paths.forEach(processOnePath);
+export const hoaxAction = (paths, watch = false) => {
+  console.log("file: library.ts:15 ~ hoaxAction ~ watch:", watch);
+  if (watch) {
+    console.log("file: library.ts:15 ~ hoaxAction ~ paths:", paths);
+    paths.forEach((path) => {
+      let timeout;
+      const watcher = fs.watch(path, (eventType, filename) => {
+        if (filename && eventType === "change") {
+          if (timeout) {
+            clearTimeout(timeout);
+          }
+
+          timeout = setTimeout(() => {
+            // Your function to be run after a delay and file changes.
+            processOnePath(path).catch((err) => {});
+          }, 1500);
+        }
+      });
+    });
+  } else {
+    paths.forEach(processOnePath);
+  }
 };
 
 const processOnePath = async (filePath) => {
@@ -109,7 +129,7 @@ export const buildHoaxHelper = async (abi, NAME, filePath = null) => {
   pragma solidity ^0.8.19;
   
   // **NOTE** This file is auto-generated do not edit it directly.
-  // Run \`frax hoax ${filePath ? "hoax " + filePath : "buildHoaxHelper " + NAME + " " + NAME}\` to re-generate it.
+  // Run \`frax hoax\` to re-generate it.
 
 
   import { Vm } from "forge-std/Test.sol";

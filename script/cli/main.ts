@@ -31,13 +31,14 @@ program
 
 program
   .command("hoax")
+  .option("-w, --watch", "watch files")
   .argument("[paths...]", "paths to source files")
   .action(async (paths, options) => {
-    if (paths) {
-      await hoaxAction(paths);
+    if (paths.length > 0) {
+      await hoaxAction(paths, options.watch);
     } else {
       const defaultPaths = getFilesFromFraxToml();
-      await hoaxAction(defaultPaths);
+      await hoaxAction(defaultPaths, options.watch);
     }
   });
 
