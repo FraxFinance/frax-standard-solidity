@@ -1,3 +1,4 @@
 forge-std/=lib/forge-std/src/
 @openzeppelin/=node_modules/@openzeppelin/
 solidity-bytes-utils/=lib/solidity-bytes-utils/
+@chainlink/=node_modules/@chainlink/
