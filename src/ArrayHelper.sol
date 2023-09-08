@@ -1,3 +1,6 @@
+// SPDX-License-Identifier: ISC
+pragma solidity >=0.8.0;
+
 library ArrayHelper {
     function concat(address[] memory _inputArray, address _newItem) internal pure returns (address[] memory _newArray) {
         uint256 _inputArrayLength = _inputArray.length;
