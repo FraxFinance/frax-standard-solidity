@@ -22,4 +22,14 @@ import {
 
 import { VmHelper } from "./VmHelper.sol";
 
-abstract contract FraxTest is VmHelper, Test {}
+abstract contract FraxTest is VmHelper, Test {
+    uint256[] internal snapShotIds;
+
+    modifier useMultipleSetupFunctions() {
+        for (uint256 i = 0; i < snapShotIds.length; i++) {
+            vm.revertTo(snapShotIds[i]);
+            _;
+            vm.clearMockedCalls();
+        }
+    }
+}
