@@ -27,9 +27,13 @@ abstract contract FraxTest is VmHelper, Test {
 
     modifier useMultipleSetupFunctions() {
         for (uint256 i = 0; i < snapShotIds.length; i++) {
-            vm.revertTo(snapShotIds[i]);
+            if (!vm.revertTo(snapShotIds[i])) {
+                revert VmDidNotRevert(snapShotIds[i]);
+            }
             _;
             vm.clearMockedCalls();
         }
     }
+
+    error VmDidNotRevert(uint256 _snapshotId);
 }
