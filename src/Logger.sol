@@ -51,6 +51,10 @@ library Logger {
         logDecimal(_string, _value, _precision);
     }
 
+    function decimal(string memory _string, uint256 _value) public pure {
+        logDecimal(_string, _value, 1e18);
+    }
+
     function logPercent(string memory _string, uint256 _percent, uint256 _precision) public pure {
         string memory _valueString = (_percent * 100).toDecimal(_precision);
         console.log(string(abi.encodePacked(_string, " ", _valueString, "%", " (raw: ", _percent.toString(), ")")));
@@ -58,6 +62,10 @@ library Logger {
 
     function percent(string memory _string, uint256 _percent, uint256 _precision) public pure {
         logPercent(_string, _percent, _precision);
+    }
+
+    function percent(string memory _string, uint256 _percent) public pure {
+        logPercent(_string, _percent, 1e18);
     }
 
     function logScientific(string memory _string, uint256 _value) public pure {
