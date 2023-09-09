@@ -10,6 +10,15 @@ library ArrayHelper {
         }
         _newArray[_inputArrayLength] = _newItem;
     }
+    
+    function concat(function()[] memory _inputArray, function() _newItem) internal pure returns (function()[] memory _newArray) {
+        uint256 _inputArrayLength = _inputArray.length;
+        _newArray = new function()[](_inputArrayLength + 1);
+        for (uint256 i = 0; i < _inputArrayLength; i++) {
+            _newArray[i] = _inputArray[i];
+        }
+        _newArray[_inputArrayLength] = _newItem;
+    }
 
     function concat(bool[] memory _inputArray, bool _newItem) internal pure returns (bool[] memory _newArray) {
         uint256 _inputArrayLength = _inputArray.length;
