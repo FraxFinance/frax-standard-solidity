@@ -35,5 +35,15 @@ abstract contract FraxTest is VmHelper, Test {
         }
     }
 
+    function addSetupFunctions(function()[] memory _setupFunctions) internal {
+        uint256 _originalSnapshotId = vm.snapshot();
+        for (uint256 i = 0; i < _setupFunctions.length; i++) {
+            _setupFunctions[i]();
+            snapShotIds.push(vm.snapshot());
+            vm.revertTo(_originalSnapshotId);
+            vm.clearMockedCalls();
+        }
+    }
+
     error VmDidNotRevert(uint256 _snapshotId);
 }
