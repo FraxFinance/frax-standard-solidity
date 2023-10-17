@@ -290,8 +290,8 @@ Why: This allows optimizer to reduce bytecode more efficiently, works better wit
 Why: Tests for impure functions should be tested under a variety of state conditions.  Separating test assertions and scenario setups allows for re-using code across multiple scenarios. See 
 
 ### Write tests in a way that you can run the test suite against deployed contracts afterwards
-See: [Frax Governance Test Example](https://github.com/FraxFinance/frax-governance-dev/blob/098a14115b447f4de94902a4ff13882ac1059ee5/test/TestFraxGovernorFork.t.sol)<br>
-See: [Fraxlend Oracles Test Example](https://github.com/FraxFinance/fraxlend-oracles-dev/blob/master/test/e2e/TestFraxUsdcCurveLpDualOracle.t.sol)
+See: [Frax Governance Test Example](https://github.com/FraxFinance/frax-governance/blob/e465513ac282aa7bfd6744b3136354fae51fed3c/test/fork/TestFraxGovernorFork.t.sol)<br>
+See: [Frax Oracles Test Example](https://github.com/FraxFinance/frax-oracles/blob/master/test/e2e/TestFraxUsdcCurveLpDualOracle.t.sol)
 
 ### Utilize fuzz tests
 
