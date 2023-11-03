@@ -8,3 +8,6 @@
 	path = lib/chainlink
 	url = https://github.com/smartcontractkit/chainlink
 	branch = release/2.6.0
+[submodule "lib/openzeppelin-contracts"]
+	path = lib/openzeppelin-contracts
+	url = https://github.com/openzeppelin/openzeppelin-contracts
