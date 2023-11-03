@@ -1,4 +1,4 @@
 forge-std/=lib/forge-std/src/
 solidity-bytes-utils/=lib/solidity-bytes-utils/
-@openzeppelin/=lib/openzepplin-contracts/
+@openzeppelin/=lib/openzeppelin-contracts/
 @chainlink/=lib/chainlink/

@@ -92,7 +92,7 @@ library OracleHelper {
     }
 
     function setUpdatedAt(AggregatorV3Interface _oracle, uint256 _updatedAt, Vm vm) public returns (int256 _price) {
-        int256 _price = _oracle.__latestRoundData().answer;
+        _price = _oracle.__latestRoundData().answer;
         vm.mockCall(
             address(_oracle),
             abi.encodeWithSelector(AggregatorV3Interface.latestRoundData.selector),
