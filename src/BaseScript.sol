@@ -28,7 +28,7 @@ abstract contract BaseScript is Script {
         string contractName;
     }
 
-    function _updateEnv(address _address, bytes memory _constructorArgs, string memory _name) internal {
+    function _updateEnv(address, bytes memory, string memory) internal pure {
         console.log("_updateEnv is deprecated");
     }
 
