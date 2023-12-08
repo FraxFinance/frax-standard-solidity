@@ -27,7 +27,7 @@
     "commander": "^10.0.0",
     "date-fns": "^2.29.3",
     "ds-test": "github:dapphub/ds-test",
-    "forge-std": "github:foundry-rs/forge-std",
+    "forge-std": "github:foundry-rs/forge-std#e8a047e3f40f13fa37af6fe14e6e06283d9a060e",
     "fs-extra": "^11.1.1",
     "husky": "^8.0.3",
     "lint-staged": "^13.1.2",
