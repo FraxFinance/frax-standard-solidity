@@ -78,13 +78,13 @@ Example: `deployFunctions.sol` (contains no contracts just a collection of free 
 
 # Misc
 
-### Use npm to install github dependencies
+### Use pnpm to install github dependencies
 Why: submodules dont provide lockfiles or commit binding.  We need to be sure that we are running/deploying the exact same code across machines.<br>
 Why: Breaking changes are common and explicitly upgrading can prevent issues across machines
 
 ### Prefer node_module packages over github packages for secure code
 
-Why: Latest code can be unstable and npm packages are typically release candidates
+Why: Latest code can be unstable and pnpm packages are typically release candidates
 
 ### Use Proper licenses
 
