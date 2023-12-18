@@ -1,14 +1,11 @@
 {
   "name": "frax-standard-solidity",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "description": "A standard library for frax solidity",
   "main": "src",
   "directories": {
     "lib": "lib",
     "test": "test"
-  },
-  "bin": {
-    "frax": "dist/cli/main.js"
   },
   "scripts": {
     "preinstall": "npx only-allow pnpm",
@@ -20,7 +17,7 @@
   "license": "ISC",
   "dependencies": {
     "@chainlink/contracts": "^0.6.1",
-    "@openzeppelin/contracts": "^4.9.0",
+    "@openzeppelin/contracts": "^5.0.1",
     "@types/fs-extra": "^11.0.1",
     "@types/node": "^18.15.11",
     "change-case": "^4.1.2",
