@@ -8,7 +8,6 @@
     "test": "test"
   },
   "scripts": {
-    "preinstall": "npx only-allow pnpm",
     "test": "forge test",
     "prepare": "husky install",
     "build": "tsc"
