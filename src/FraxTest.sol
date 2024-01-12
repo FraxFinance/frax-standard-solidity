@@ -10,7 +10,7 @@ abstract contract FraxTest is VmHelper, Test {
     function()[] internal setupFunctions;
 
     modifier useMultipleSetupFunctions() {
-        require(snapShotIds.length > 0, "No Snapshots to load");
+        if (snapShotIds.length == 0) _;
         for (uint256 i = 0; i < snapShotIds.length; i++) {
             if (!vm.revertTo(snapShotIds[i])) {
                 revert VmDidNotRevert(snapShotIds[i]);
