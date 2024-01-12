@@ -7,6 +7,7 @@ import { VmHelper } from "./VmHelper.sol";
 
 abstract contract FraxTest is VmHelper, Test {
     uint256[] internal snapShotIds;
+    function()[] internal setupFunctions;
 
     modifier useMultipleSetupFunctions() {
         require(snapShotIds.length > 0, "No Snapshots to load");
