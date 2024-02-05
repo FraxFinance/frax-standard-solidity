@@ -2,7 +2,6 @@
 pragma solidity >=0.8.0;
 
 import "../src/FraxTest.sol";
-import { ArrayHelper } from "../src/ArrayHelper.sol";
 
 contract TestMultipleSetup is FraxTest {
     uint256 value;
