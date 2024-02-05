@@ -12,16 +12,17 @@ abstract contract FraxTest is VmHelper, Test {
     modifier useMultipleSetupFunctions() {
         if (snapShotIds.length == 0) _;
         for (uint256 i = 0; i < snapShotIds.length; i++) {
+            uint256 _originalSnapshotId = vm.snapshot();
             if (!vm.revertTo(snapShotIds[i])) {
                 revert VmDidNotRevert(snapShotIds[i]);
             }
             _;
             vm.clearMockedCalls();
+            vm.revertTo(_originalSnapshotId);
         }
     }
 
     function addSetupFunctions(function()[] memory _setupFunctions) internal {
-        uint256 _originalSnapshotId = vm.snapshot();
         for (uint256 i = 0; i < _setupFunctions.length; i++) {
             _setupFunctions[i]();
             snapShotIds.push(vm.snapshot());
