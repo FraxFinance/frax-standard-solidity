@@ -14,8 +14,7 @@ contract ProxyHelper {
         Proxy proxy = new Proxy{ salt: _salt }({ _owner: msg.sender });
         bytes memory data = abi.encode(_functionSignature, _encodedArguments);
         proxy.upgradeToAndCall({ _implementation: _implementation, _data: data });
-        /// @dev: _owner is required to accept before ownership is fully transfered
-        proxy.transferOwnership(_owner);
+        proxy.initialize(_owner);
 
         return address(proxy);
     }

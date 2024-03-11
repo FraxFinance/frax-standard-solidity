@@ -46,8 +46,12 @@ contract Proxy is Ownable2StepUpgradeable {
         }
     }
 
-    constructor(address _owner) {
-        _transferOwnership(_owner);
+    constructor() {
+        __Ownable_init(msg.sender);
+    }
+
+    function initialize(address _owner) external initializer onlyOwner {
+        _transferOwnership(_owner):
     }
 
     // slither-disable-next-line locked-ether
