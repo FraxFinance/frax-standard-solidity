@@ -2,8 +2,8 @@
 pragma solidity >=0.8.0;
 
 import { console2 as console, StdAssertions, StdChains, StdCheats, stdError, StdInvariant, stdJson, stdMath, StdStorage, stdStorage, StdUtils, Vm, StdStyle, TestBase, DSTest, Test } from "forge-std/Test.sol";
-
 import { VmHelper } from "./VmHelper.sol";
+import { Strings } from "src/StringsHelper.sol";
 
 abstract contract FraxTest is VmHelper, Test {
     uint256[] internal snapShotIds;
@@ -27,6 +27,17 @@ abstract contract FraxTest is VmHelper, Test {
             _setupFunctions[i]();
             snapShotIds.push(vm.snapshot());
             vm.clearMockedCalls();
+        }
+    }
+
+    function dumpStorageLayout(address target, uint256 slotsToDump) internal view {
+        console.log("===================================");
+        console.log("Storage dump for: ", target);
+        console.log("===================================");
+        for (uint i; i <= slotsToDump; i++) {
+            bytes32 slot = vm.load(target, bytes32(uint256(i)));
+            string memory exp = Strings.toHexString(uint256(slot), 32);
+            console.log("slot", i, ":", exp);
         }
     }
 
