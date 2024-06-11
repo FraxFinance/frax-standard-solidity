@@ -9,6 +9,10 @@ abstract contract FraxTest is VmHelper, Test {
     uint256[] internal snapShotIds;
     function()[] internal setupFunctions;
 
+    // ========================================================================
+    // ~~~~~~~~~~~~~~~~~~ Different State Testing Helpers ~~~~~~~~~~~~~~~~~~~~~
+    // ========================================================================
+
     modifier useMultipleSetupFunctions() {
         if (snapShotIds.length == 0) _;
         for (uint256 i = 0; i < snapShotIds.length; i++) {
@@ -30,6 +34,13 @@ abstract contract FraxTest is VmHelper, Test {
         }
     }
 
+    // ========================================================================
+    // ~~~~~~~~~~~~~~~~~~~~~~~ Storage Slot Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ========================================================================
+
+    /// @notice Helper function to dump the storage slots of a contract to the console
+    /// @param target      The target contract whose state we wish to view
+    /// @param slotsToDump The # of lower storage slots we want to log
     function dumpStorageLayout(address target, uint256 slotsToDump) internal view {
         console.log("===================================");
         console.log("Storage dump for: ", target);
@@ -39,6 +50,47 @@ abstract contract FraxTest is VmHelper, Test {
             string memory exp = Strings.toHexString(uint256(slot), 32);
             console.log("slot", i, ":", exp);
         }
+    }
+
+    /// @notice Helper function for unpacking low level storage slots
+    /// @param dataToUnpack The bytes32|uint256 of the slot to unpack
+    /// @param offset       The bits to remove st. the target bits are LSB
+    /// @param lenOfTarget  The length target result in bits
+    /// @return result      The target bits expressed as a uint256
+    function unpackBits(
+        uint256 dataToUnpack,
+        uint256 offset,
+        uint256 lenOfTarget
+    ) internal pure returns (uint256 result) {
+        uint256 mask = (1 << lenOfTarget) - 1;
+        result = (dataToUnpack >> offset) & mask;
+    }
+
+    function unpackBits(
+        bytes32 dataToUnpack,
+        uint256 offset,
+        uint256 lenOfTarget
+    ) internal pure returns (uint256 result) {
+        uint256 mask = (1 << lenOfTarget) - 1;
+        result = (uint256(dataToUnpack) >> offset) & mask;
+    }
+
+    function unpackBitsAndLogUint(
+        uint256 dataToUnpack,
+        uint256 offset,
+        uint256 lenOfTarget
+    ) internal pure returns (uint256 result) {
+        result = unpackBits(dataToUnpack, offset, lenOfTarget);
+        console.log(result);
+    }
+
+    function unpackBitsAndLogUint(
+        bytes32 dataToUnpack,
+        uint256 offset,
+        uint256 lenOfTarget
+    ) internal pure returns (uint256 result) {
+        result = unpackBits(dataToUnpack, offset, lenOfTarget);
+        console.log(result);
     }
 
     error VmDidNotRevert(uint256 _snapshotId);
