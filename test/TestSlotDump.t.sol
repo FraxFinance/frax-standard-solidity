@@ -27,6 +27,23 @@ contract TestSlotDump is FraxTest {
         assertEq(uint256(uint160(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)), unpacked2);
         assertEq(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, address(uint160(unpacked2)));
     }
+
+    function testUnpackSlotUint() public {
+        instance = address(new Charlie());
+        dumpStorageLayout(instance, 15);
+
+        uint256 packedSlot = uint256(vm.load(address(instance), bytes32(uint(9))));
+        uint256 unpacked1 = unpackBitsAndLogUint(packedSlot, 0, 96);
+        uint256 unpacked2 = unpackBitsAndLogUint(packedSlot, 96, 160);
+
+        /// @notice `unpacked1` is `uint96` expressed as `uint256`
+        assertEq(22222222222222222222, unpacked1);
+        assertEq(22222222222222222222, uint96(unpacked1));
+
+        /// @notice `unpacked2` is `address` expressed as `uint256`
+        assertEq(uint256(uint160(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE)), unpacked2);
+        assertEq(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE, address(uint160(unpacked2)));
+    }
 }
 
 // ================== Helpers ==================
