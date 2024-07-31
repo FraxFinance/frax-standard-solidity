@@ -11,13 +11,13 @@ contract TestSlotDump is FraxTest {
         dumpStorageLayout(instance, 15);
     }
 
-    function testUnpackSlot() public {
+    function testUnpackSlotBytes() public {
         instance = address(new Charlie());
         dumpStorageLayout(instance, 15);
 
         bytes32 packedSlot = vm.load(address(instance), bytes32(uint(9)));
-        uint256 unpacked1 = unpackBits(packedSlot, 0, 96);
-        uint256 unpacked2 = unpackBits(packedSlot, 96, 160);
+        uint256 unpacked1 = unpackBitsAndLogUint(packedSlot, 0, 96);
+        uint256 unpacked2 = unpackBitsAndLogUint(packedSlot, 96, 160);
 
         /// @notice `unpacked1` is `uint96` expressed as `uint256`
         assertEq(22222222222222222222, unpacked1);
