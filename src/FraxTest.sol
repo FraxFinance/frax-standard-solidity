@@ -6,7 +6,7 @@ import { VmHelper } from "./VmHelper.sol";
 import { Strings } from "./StringsHelper.sol";
 
 abstract contract FraxTest is VmHelper, Test {
-    /// @notice Chain State Storage
+    /// @notice Differential State Storage
     uint256[] internal snapShotIds;
     function()[] internal setupFunctions;
 
