@@ -6,8 +6,13 @@ import { VmHelper } from "./VmHelper.sol";
 import { Strings } from "./StringsHelper.sol";
 
 abstract contract FraxTest is VmHelper, Test {
+    /// @notice Differential State Storage
     uint256[] internal snapShotIds;
     function()[] internal setupFunctions;
+
+    /// @notice EIP-1967 Slots
+    bytes32 internal IMPLEMENTATION_SLOT = bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
+    bytes32 internal ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
 
     // ========================================================================
     // ~~~~~~~~~~~~~~~~~~ Different State Testing Helpers ~~~~~~~~~~~~~~~~~~~~~
@@ -32,6 +37,34 @@ abstract contract FraxTest is VmHelper, Test {
             snapShotIds.push(vm.snapshot());
             vm.clearMockedCalls();
         }
+    }
+
+    // ========================================================================
+    // ~~~~~~~~~~~~~~~~~~~~~~~ EIP-1967 Proxy Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ========================================================================
+
+    /// @notice Helper function to efficiently return the address type located at the implementation
+    ///         and admin slot on an EIP-1967 Proxy
+    /// @param _proxyToCheck    The proxy to fetch the implementation and admin of
+    /// @return implementation  The Implmentation of the `_proxyToCheck`
+    /// @return admin           The Admin of the `_proxyToCheck`
+    function get1967ProxyImplAndAdmin(
+        address _proxyToCheck
+    ) internal view returns (address implementation, address admin) {
+        implementation = address(uint160(uint(vm.load(_proxyToCheck, IMPLEMENTATION_SLOT))));
+        admin = address(uint160(uint(vm.load(_proxyToCheck, ADMIN_SLOT))));
+    }
+
+    /// @notice Variant of the above function but the returns will be logged to the console
+    /// @param _proxyToCheck    The proxy to fetch the implementation and admin of
+    /// @return implementation  The Implmentation of the `_proxyToCheck`
+    /// @return admin           The Admin of the `_proxyToCheck`
+    function get1967ProxyImplAndAdminWithLog(
+        address _proxyToCheck
+    ) internal view returns (address implementation, address admin) {
+        (implementation, admin) = get1967ProxyImplAndAdmin(_proxyToCheck);
+        console.log("           get1967ProxyImplAndAdminWithLog: Implementation - ", implementation);
+        console.log("           get1967ProxyImplAndAdminWithLog: ProxyAdmin - ", admin);
     }
 
     // ========================================================================
