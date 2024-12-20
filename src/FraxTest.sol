@@ -12,7 +12,7 @@ abstract contract FraxTest is VmHelper, Test {
 
     /// @notice EIP-1967 Slots
     bytes32 internal IMPLEMENTATION_SLOT = bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
-    bytes32 internal ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
+    bytes32 internal ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
 
     // ========================================================================
     // ~~~~~~~~~~~~~~~~~~ Different State Testing Helpers ~~~~~~~~~~~~~~~~~~~~~
