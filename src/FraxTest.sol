@@ -8,6 +8,7 @@ import { Strings } from "./StringsHelper.sol";
 abstract contract FraxTest is VmHelper, Test {
     /// @notice Differential State Storage
     uint256[] internal snapShotIds;
+    uint256 currentSnapShotId;
     function()[] internal setupFunctions;
 
     /// @notice EIP-1967 Slots
@@ -22,6 +23,7 @@ abstract contract FraxTest is VmHelper, Test {
         if (snapShotIds.length == 0) _;
         for (uint256 i = 0; i < snapShotIds.length; i++) {
             uint256 _originalSnapshotId = vm.snapshot();
+            // currentSnapShotId = snapShotIds[i];
             if (!vm.revertTo(snapShotIds[i])) {
                 revert VmDidNotRevert(snapShotIds[i]);
             }
