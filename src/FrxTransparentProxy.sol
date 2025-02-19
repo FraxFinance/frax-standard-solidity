@@ -21,6 +21,10 @@ contract FrxTransparentProxy is TransparentUpgradeableProxy {
         bytes memory _data
     ) TransparentUpgradeableProxy(_logic, _initialAdmin, _data) {}
 
+    // ================================================================
+    // ~~~~~~~~~~~~~~~~~~~~~~~~~~ Extension ~~~~~~~~~~~~~~~~~~~~~~~~~~
+    // ================================================================
+
     /// @notice Low level function to read arbitrary slots from the proxy
     /// @param slot  The slot to read
     /// @return data The bytes32 data that is stored on that slot
