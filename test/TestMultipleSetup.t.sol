@@ -4,7 +4,8 @@ pragma solidity >=0.8.0;
 import "../src/FraxTest.sol";
 
 contract TestMultipleSetup is FraxTest {
-    uint256 value;
+    uint256 public value;
+    uint256 public runsPassed;
 
     function initializeValueOne() public {
         value = 25;
@@ -23,9 +24,19 @@ contract TestMultipleSetup is FraxTest {
         setupFunctions.push(initializeValueTwo);
         setupFunctions.push(initializeValueThree);
         addSetupFunctions(setupFunctions);
+        vm.makePersistent(address(this));
     }
 
-    function testFailAssertValue() public useMultipleSetupFunctions {
-        assertEq(value, 5);
+    function revertIfNotFive(uint256 value) public {
+        if (value != 5) revert();
+        else revert("Run Passed");
+    }
+
+    /// @notice Should fail if value is not 5, should fail differently if
+    ///         value == 5
+    function testAssertValue() public useMultipleSetupFunctions {
+        if (value != 5) vm.expectRevert();
+        else vm.expectRevert(bytes("Run Passed"));
+        this.revertIfNotFive(value);
     }
 }
