@@ -1,6 +1,6 @@
 {
   "name": "frax-standard-solidity",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A standard library for frax solidity",
   "main": "src",
   "directories": {
@@ -16,7 +16,8 @@
   "license": "ISC",
   "dependencies": {
     "@chainlink/contracts": "^0.6.1",
-    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts": "^5.0.2",
+    "@openzeppelin/contracts-upgradeable": "^5.0.2",
     "@types/fs-extra": "^11.0.4",
     "@types/node": "^18.19.7",
     "change-case": "^4.1.2",
