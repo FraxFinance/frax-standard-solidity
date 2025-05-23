@@ -25,8 +25,8 @@ contract TestFrxTransparentProxy is FraxTest {
     function testReadImplementationSlot() public {
         bytes32 impl = frxUsdProxy.readArbitrary(IMPLEMENTATION_SLOT);
         assertEq({
-            a: address(uint160(uint256(impl))),
-            b: 0x00000aFb5e62fd81bC698E418dBfFE5094cB38E0,
+            right: address(uint160(uint256(impl))),
+            left: 0x00000aFb5e62fd81bC698E418dBfFE5094cB38E0,
             err: "// THEN: Implementation not as expected"
         });
     }
@@ -35,8 +35,8 @@ contract TestFrxTransparentProxy is FraxTest {
         bytes32 admin = frxUsdProxy.readArbitrary(ADMIN_SLOT);
         console.logBytes32(admin);
         assertEq({
-            a: address(uint160(uint256(admin))),
-            b: 0xfC0000000000000000000000000000000000000a,
+            right: address(uint160(uint256(admin))),
+            left: 0xfC0000000000000000000000000000000000000a,
             err: "// THEN: Admin not as expected"
         });
     }
@@ -45,6 +45,6 @@ contract TestFrxTransparentProxy is FraxTest {
         /// Derive the balance slot
         bytes32 balanceSlot = keccak256(abi.encode(0x31562ae726AFEBe25417df01bEdC72EF489F45b3, 0));
         bytes32 balance = frxUsdProxy.readArbitrary(balanceSlot);
-        assertEq({ a: uint256(balance), b: 879.253786510845295473e18, err: "// THEN: balance not as expected" });
+        assertEq({ right: uint256(balance), left: 879.253786510845295473e18, err: "// THEN: balance not as expected" });
     }
 }
