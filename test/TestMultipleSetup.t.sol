@@ -27,8 +27,8 @@ contract TestMultipleSetup is FraxTest {
         vm.makePersistent(address(this));
     }
 
-    function revertIfNotFive(uint256 value) public {
-        if (value != 5) revert();
+    function revertIfNotFive(uint256 _value) public pure {
+        if (_value != 5) revert();
         else revert("Run Passed");
     }
 

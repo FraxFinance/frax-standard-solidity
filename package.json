@@ -1,6 +1,6 @@
 {
   "name": "frax-standard-solidity",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A standard library for frax solidity",
   "main": "src",
   "directories": {
@@ -12,33 +12,31 @@
     "prepare": "husky install",
     "build": "tsc"
   },
-  "author": "Drake Evans (twitter.com/drakeevansv1)",
+  "author": "Frax Finance",
   "license": "ISC",
   "dependencies": {
-    "@chainlink/contracts": "^0.6.1",
-    "@openzeppelin/contracts": "^5.0.1",
+    "@openzeppelin/contracts": "^5.4.0",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^18.19.7",
+    "@types/node": "^18.19.120",
     "change-case": "^4.1.2",
     "commander": "^10.0.1",
     "date-fns": "^2.30.0",
     "ds-test": "github:dapphub/ds-test",
-    "forge-std": "github:foundry-rs/forge-std#77041d2ce690e692d6e03cc812b57d1ddaa4d505",
-    "fs-extra": "^11.2.0",
+    "forge-std": "github:foundry-rs/forge-std#60acb7aaadcce2d68e52986a0a66fe79f07d138f",
+    "fs-extra": "^11.3.0",
     "husky": "^8.0.3",
-    "lint-staged": "^13.3.0",
-    "prettier": "^3.2.2",
-    "prettier-plugin-solidity": "^1.3.1",
-    "solc": "^0.8.23",
+    "lint-staged": "^16.1.2",
+    "prettier": "^3.6.2",
+    "prettier-plugin-solidity": "^1.4.3",
+    "solc": "^0.8.30",
     "solhint": "^3.6.2",
     "solhint-plugin-prettier": "^0.1.0",
-    "solidity-bytes-utils": "^0.8.2",
+    "solidity-bytes-utils": "^0.8.4",
     "toml": "^3.0.0",
     "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.8.3"
   },
   "devDependencies": {
-    "glob": "^10.3.10"
-  },
-  "packageManager": "pnpm@10.2.1+sha512.398035c7bd696d0ba0b10a688ed558285329d27ea994804a52bad9167d8e3a72bcb993f9699585d3ca25779ac64949ef422757a6c31102c12ab932e5cbe5cc92"
+    "glob": "^11.0.3"
+  }
 }
