@@ -3,11 +3,11 @@ pragma solidity >=0.8.0;
 
 import "../src/FraxTest.sol";
 import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import { FrxTransparentProxy } from "src/FrxTransparentProxy.sol";
+import { FraxTransparentProxy } from "src/FraxTransparentProxy.sol";
 
-contract TestFrxTransparentProxy is FraxTest {
+contract TestFraxTransparentProxy is FraxTest {
     address instance;
-    FrxTransparentProxy frxUsdProxy;
+    FraxTransparentProxy frxUsdProxy;
     IERC20 frxUsd;
 
     function setUp() public {
@@ -16,9 +16,9 @@ contract TestFrxTransparentProxy is FraxTest {
             address(0xC2A4), /// The Unicode character '¤' encoded in UTF-8 and represented as hex
             hex"11"
         );
-        instance = address(new FrxTransparentProxy(address(0xC2A4), address(0xC2A4), hex""));
+        instance = address(new FraxTransparentProxy(address(0xC2A4), address(0xC2A4), hex""));
         vm.etch(0xFc00000000000000000000000000000000000001, instance.code);
-        frxUsdProxy = FrxTransparentProxy(payable(0xFc00000000000000000000000000000000000001));
+        frxUsdProxy = FraxTransparentProxy(payable(0xFc00000000000000000000000000000000000001));
         frxUsd = IERC20(0xFc00000000000000000000000000000000000001);
     }
 
