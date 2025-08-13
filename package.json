@@ -17,7 +17,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.4.0",
     "@types/fs-extra": "^11.0.4",
-    "@types/node": "^18.19.120",
+    "@types/node": "^24.2.1",
     "change-case": "^4.1.2",
     "commander": "^10.0.1",
     "date-fns": "^2.30.0",
