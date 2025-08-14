@@ -1,7 +1,7 @@
 {
   "name": "frax-standard-solidity",
-  "version": "1.1.0",
-  "description": "A standard library for frax solidity",
+  "version": "1.1.1",
+  "description": "A standard library for Frax solidity",
   "main": "src",
   "directories": {
     "lib": "lib",
