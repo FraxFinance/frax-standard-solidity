@@ -19,9 +19,7 @@ interface ITransparentUpgradeableProxy is IERC1967 {
 
 /// @notice OZ 5.0 version of the TransparentUpgradeableProxy, which sets the proxyAdmin to a desired address instead of
 /// a freshly deployed ProxyAdmin contract (see OZ 5.x TransparentUpgradeableProxy constructor for ProxyAdmin deployment).
-/// @dev This version adds:
-///     - views to access the implementation and admin slots without calling through the proxyAdmin.
-///     - ability to change the admin
+/// @dev This version adds the ability to change the admin, and does not deploy a ProxyAdmin upon deployment.
 contract FraxUpgradeableProxy is ERC1967Proxy {
     /// @notice Error thrown when a non-admin tries to call the upgrade function.
     error ProxyDeniedAdminAccess();
@@ -64,20 +62,6 @@ contract FraxUpgradeableProxy is ERC1967Proxy {
     function _changeAdmin() private {
         address newAdmin = abi.decode(msg.data[4:], (address));
         ERC1967Utils.changeAdmin(newAdmin);
-    }
-
-    /**
-     * @dev Returns the current implementation address.
-     */
-    function implementation() external view returns (address) {
-        return ERC1967Utils.getImplementation();
-    }
-
-    /**
-     * @dev Returns the current admin address.
-     */
-    function admin() external view returns (address) {
-        return ERC1967Utils.getAdmin();
     }
 
     /// @notice Silence compiler warnings
