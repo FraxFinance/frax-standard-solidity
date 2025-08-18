@@ -16,32 +16,6 @@ abstract contract FraxTest is VmHelper, Test {
     bytes32 internal ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
 
     // ========================================================================
-    // ~~~~~~~~~~~~~~~~~~ Different State Testing Helpers ~~~~~~~~~~~~~~~~~~~~~
-    // ========================================================================
-
-    modifier useMultipleSetupFunctions() {
-        if (snapShotIds.length == 0) _;
-        for (uint256 i = 0; i < snapShotIds.length; i++) {
-            uint256 _originalSnapshotId = vm.snapshotState();
-            // currentSnapShotId = snapShotIds[i];
-            if (!vm.revertToState(snapShotIds[i])) {
-                revert VmDidNotRevert(snapShotIds[i]);
-            }
-            _;
-            vm.clearMockedCalls();
-            vm.revertToState(_originalSnapshotId);
-        }
-    }
-
-    function addSetupFunctions(function()[] memory _setupFunctions) internal {
-        for (uint256 i = 0; i < _setupFunctions.length; i++) {
-            _setupFunctions[i]();
-            snapShotIds.push(vm.snapshotState());
-            vm.clearMockedCalls();
-        }
-    }
-
-    // ========================================================================
     // ~~~~~~~~~~~~~~~~~~~~~~~ EIP-1967 Proxy Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~
     // ========================================================================
 
