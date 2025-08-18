@@ -6,11 +6,6 @@ import { VmHelper } from "./VmHelper.sol";
 import { Strings } from "./StringsHelper.sol";
 
 abstract contract FraxTest is VmHelper, Test {
-    /// @notice Differential State Storage
-    uint256[] internal snapShotIds;
-    uint256 currentSnapShotId;
-    function()[] internal setupFunctions;
-
     /// @notice EIP-1967 Slots
     bytes32 internal IMPLEMENTATION_SLOT = bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
     bytes32 internal ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
