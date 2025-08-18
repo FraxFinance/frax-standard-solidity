@@ -6,40 +6,9 @@ import { VmHelper } from "./VmHelper.sol";
 import { Strings } from "./StringsHelper.sol";
 
 abstract contract FraxTest is VmHelper, Test {
-    /// @notice Differential State Storage
-    uint256[] internal snapShotIds;
-    uint256 currentSnapShotId;
-    function()[] internal setupFunctions;
-
     /// @notice EIP-1967 Slots
     bytes32 internal IMPLEMENTATION_SLOT = bytes32(uint256(keccak256("eip1967.proxy.implementation")) - 1);
     bytes32 internal ADMIN_SLOT = bytes32(uint256(keccak256("eip1967.proxy.admin")) - 1);
-
-    // ========================================================================
-    // ~~~~~~~~~~~~~~~~~~ Different State Testing Helpers ~~~~~~~~~~~~~~~~~~~~~
-    // ========================================================================
-
-    modifier useMultipleSetupFunctions() {
-        if (snapShotIds.length == 0) _;
-        for (uint256 i = 0; i < snapShotIds.length; i++) {
-            uint256 _originalSnapshotId = vm.snapshotState();
-            // currentSnapShotId = snapShotIds[i];
-            if (!vm.revertToState(snapShotIds[i])) {
-                revert VmDidNotRevert(snapShotIds[i]);
-            }
-            _;
-            vm.clearMockedCalls();
-            vm.revertToState(_originalSnapshotId);
-        }
-    }
-
-    function addSetupFunctions(function()[] memory _setupFunctions) internal {
-        for (uint256 i = 0; i < _setupFunctions.length; i++) {
-            _setupFunctions[i]();
-            snapShotIds.push(vm.snapshotState());
-            vm.clearMockedCalls();
-        }
-    }
 
     // ========================================================================
     // ~~~~~~~~~~~~~~~~~~~~~~~ EIP-1967 Proxy Helpers ~~~~~~~~~~~~~~~~~~~~~~~~~
