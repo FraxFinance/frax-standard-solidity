@@ -11,10 +11,10 @@ import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/trans
 // | /_/   /_/   \__,_/_/|_|  /_/   /_/_/ /_/\__,_/_/ /_/\___/\___/   |
 // |                                                                  |
 // ====================================================================
-// ====================== FrxTransparentProxy =========================
+// ===================== FraxTransparentProxy =========================
 // ====================================================================
 
-contract FrxTransparentProxy is TransparentUpgradeableProxy {
+contract FraxTransparentProxy is TransparentUpgradeableProxy {
     constructor(
         address _logic,
         address _initialAdmin,
