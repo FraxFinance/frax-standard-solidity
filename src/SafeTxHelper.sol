@@ -3,7 +3,7 @@ pragma solidity ^0.8.0;
 
 import { Script } from "forge-std/Script.sol";
 import { stdJson } from "forge-std/StdJson.sol";
-import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
+import { Strings } from "src/@openzeppelin/contracts-5.4.0/utils/Strings.sol";
 
 struct SafeTx {
     string name;

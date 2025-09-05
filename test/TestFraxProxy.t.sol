@@ -2,7 +2,7 @@
 pragma solidity >=0.8.0;
 
 import "../src/FraxTest.sol";
-import { IERC20 } from "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import { IERC20 } from "src/@openzeppelin/contracts-5.4.0/token/ERC20/IERC20.sol";
 import { FraxTransparentProxy } from "src/FraxTransparentProxy.sol";
 
 contract TestFraxTransparentProxy is FraxTest {
@@ -22,7 +22,7 @@ contract TestFraxTransparentProxy is FraxTest {
         frxUsd = IERC20(0xFc00000000000000000000000000000000000001);
     }
 
-    function testReadImplementationSlot() public {
+    function testReadImplementationSlot() public view {
         bytes32 impl = frxUsdProxy.readArbitrary(IMPLEMENTATION_SLOT);
         assertEq({
             right: address(uint160(uint256(impl))),
@@ -31,7 +31,7 @@ contract TestFraxTransparentProxy is FraxTest {
         });
     }
 
-    function testReadAdminSlot() public {
+    function testReadAdminSlot() public view {
         bytes32 admin = frxUsdProxy.readArbitrary(ADMIN_SLOT);
         console.logBytes32(admin);
         assertEq({
@@ -41,7 +41,7 @@ contract TestFraxTransparentProxy is FraxTest {
         });
     }
 
-    function testReadBalanceData() public {
+    function testReadBalanceData() public view {
         /// Derive the balance slot
         bytes32 balanceSlot = keccak256(abi.encode(0x31562ae726AFEBe25417df01bEdC72EF489F45b3, 0));
         bytes32 balance = frxUsdProxy.readArbitrary(balanceSlot);
