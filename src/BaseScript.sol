@@ -3,7 +3,7 @@ pragma solidity >=0.8.0;
 
 import { Script } from "forge-std/Script.sol";
 import { console2 as console } from "forge-std/Test.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
+import "src/@openzeppelin/contracts-5.4.0/utils/Strings.sol";
 
 abstract contract BaseScript is Script {
     using Strings for *;

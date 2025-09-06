@@ -7,7 +7,7 @@ import { ArrayHelper } from "../src/ArrayHelper.sol";
 contract TestArrayHelper is FraxTest {
     using ArrayHelper for *;
 
-    function testConcat() public {
+    function testConcat() public pure {
         address[] memory _myArray = new address[](3);
         _myArray = _myArray.concat(address(36));
         for (uint256 i = 0; i < _myArray.length; i++) {

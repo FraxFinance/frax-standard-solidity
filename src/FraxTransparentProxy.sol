@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: ISC
 pragma solidity >=0.8.0;
 
-import { TransparentUpgradeableProxy } from "@openzeppelin/contracts/proxy/transparent/TransparentUpgradeableProxy.sol";
+import { TransparentUpgradeableProxy } from "src/@openzeppelin/contracts-5.4.0/proxy/transparent/TransparentUpgradeableProxy.sol";
 
 // ====================================================================
 // |     ______                   _______                             |

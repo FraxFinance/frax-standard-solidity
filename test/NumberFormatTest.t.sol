@@ -5,21 +5,21 @@ import "../src/FraxTest.sol";
 import "../src/NumberFormat.sol";
 
 contract NumberFormatTest is FraxTest {
-    function testToScientific() public {
+    function testToScientific() public pure {
         uint256 _value = 123456789;
         string memory _expected = "1.23456789e8";
         string memory _actual = NumberFormat.toScientific(_value);
         assertEq(_expected, _actual);
     }
 
-    function testToScientific2() public {
+    function testToScientific2() public pure {
         uint256 _value = 1e18;
         string memory _expected = "1e18";
         string memory _actual = NumberFormat.toScientific(_value);
         assertEq(_expected, _actual);
     }
 
-    function testToScientific3() public {
+    function testToScientific3() public pure {
         uint256 _value = 1010;
         string memory _expected = "1.01e3";
         string memory _actual = NumberFormat.toScientific(_value);

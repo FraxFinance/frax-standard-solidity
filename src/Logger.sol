@@ -19,7 +19,7 @@ pragma solidity >=0.8.0;
 // ====================================================================
 
 import { console2 as console } from "forge-std/Test.sol";
-import { Strings } from "@openzeppelin/contracts/utils/Strings.sol";
+import { Strings } from "src/@openzeppelin/contracts-5.4.0/utils/Strings.sol";
 import { NumberFormat } from "./NumberFormat.sol";
 import { AddressHelper } from "./AddressHelper.sol";
 
