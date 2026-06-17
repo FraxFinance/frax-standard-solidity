@@ -2,5 +2,7 @@
 src = 'src'
 out = 'out'
 libs = ["node_modules"]
+[lint]
+exclude_lints = ["unsafe-typecast", "incorrect-shift"]
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config

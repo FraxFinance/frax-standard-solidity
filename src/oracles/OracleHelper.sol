@@ -1,9 +1,8 @@
 // SPDX-License-Identifier: ISC
 pragma solidity >=0.8.0;
 
-import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import { Vm } from "forge-std/Test.sol";
-import { AggregatorV3InterfaceStructHelper } from "./AggregatorV3InterfaceStructHelper.sol";
+import { AggregatorV3InterfaceStructHelper, AggregatorV3Interface } from "./AggregatorV3InterfaceStructHelper.sol";
 
 library OracleHelper {
     using AggregatorV3InterfaceStructHelper for AggregatorV3Interface;
