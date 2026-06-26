@@ -1,5 +1,4 @@
 forge-std/=node_modules/forge-std/src/
 solidity-bytes-utils/=node_modules/solidity-bytes-utils/
 @openzeppelin/=node_modules/@openzeppelin/
-@chainlink/=node_modules/@chainlink/
 ds-test/=node_modules/ds-test/src/

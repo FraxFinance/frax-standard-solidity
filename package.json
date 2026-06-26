@@ -9,33 +9,33 @@
   },
   "scripts": {
     "test": "forge test",
-    "prepare": "husky install",
     "build": "tsc"
   },
   "author": "Frax Finance",
   "license": "ISC",
+  "files": [
+    "src"
+  ],
   "dependencies": {
-    "@types/fs-extra": "^11.0.4",
-    "@types/node": "^24.2.1",
-    "change-case": "^4.1.2",
-    "commander": "^10.0.1",
-    "date-fns": "^2.30.0",
-    "ds-test": "github:dapphub/ds-test",
-    "forge-std": "github:foundry-rs/forge-std#60acb7aaadcce2d68e52986a0a66fe79f07d138f",
-    "fs-extra": "^11.3.0",
-    "husky": "^8.0.3",
-    "lint-staged": "^16.1.2",
-    "prettier": "^3.6.2",
-    "prettier-plugin-solidity": "^1.4.3",
-    "solc": "^0.8.30",
-    "solhint": "^3.6.2",
-    "solhint-plugin-prettier": "^0.1.0",
-    "solidity-bytes-utils": "^0.8.4",
-    "toml": "^3.0.0",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.8.3"
+    "solidity-bytes-utils": "0.8.4"
   },
   "devDependencies": {
-    "glob": "^11.0.3"
+    "ds-test": "github:dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0",
+    "forge-std": "github:foundry-rs/forge-std#60acb7aaadcce2d68e52986a0a66fe79f07d138f",
+    "@types/fs-extra": "11.0.4",
+    "@types/node": "24.3.0",
+    "change-case": "4.1.2",
+    "commander": "10.0.1",
+    "date-fns": "2.30.0",
+    "fs-extra": "11.3.0",
+    "glob": "11.0.3",
+    "prettier": "3.6.2",
+    "prettier-plugin-solidity": "1.4.3",
+    "solc": "0.8.30",
+    "solhint": "3.6.2",
+    "solhint-plugin-prettier": "0.1.0",
+    "toml": "3.0.0",
+    "ts-node": "10.9.2",
+    "typescript": "5.8.3"
   }
 }
