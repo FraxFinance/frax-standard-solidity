@@ -17,11 +17,11 @@
     "src"
   ],
   "dependencies": {
-    "ds-test": "github:dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0",
-    "forge-std": "github:foundry-rs/forge-std#60acb7aaadcce2d68e52986a0a66fe79f07d138f",
     "solidity-bytes-utils": "0.8.4"
   },
   "devDependencies": {
+    "ds-test": "github:dapphub/ds-test#e282159d5170298eb2455a6c05280ab5a73a4ef0",
+    "forge-std": "github:foundry-rs/forge-std#60acb7aaadcce2d68e52986a0a66fe79f07d138f",
     "@types/fs-extra": "11.0.4",
     "@types/node": "24.3.0",
     "change-case": "4.1.2",
