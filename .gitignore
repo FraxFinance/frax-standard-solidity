@@ -24,3 +24,6 @@ dist
 
 .vscode
 package-lock.json
+
+# Test scratch output
+test/.tmp
