@@ -2,6 +2,9 @@
 src = 'src'
 out = 'out'
 libs = ["node_modules"]
+# Scratch space for the SafeTxHelper tests. The helper itself writes wherever
+# its caller points it; consumers grant permission for their own output path.
+fs_permissions = [{ access = "read-write", path = "./test/.tmp" }]
 [lint]
 exclude_lints = ["unsafe-typecast", "incorrect-shift"]
 
