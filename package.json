@@ -8,8 +8,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "forge test",
-    "build": "tsc"
+    "test": "forge test"
   },
   "author": "Frax Finance",
   "license": "ISC",
